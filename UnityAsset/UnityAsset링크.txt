@@ -1,0 +1,45 @@
+[ 동물 캐릭터 ] - 유료
+1) Animal World GUI Pack (2D 동물 캐릭터 및 다양한 UI) : 
+https://assetstore.unity.com/packages/2d/gui/animal-world-gui-pack-62974
+
+2) Low Poly Humanized Animals (3D 동물 캐릭터, 옷이 다양함) :
+https://assetstore.unity.com/packages/3d/characters/animals/low-poly-humanized-animals-186803
+
+3) 20 Animated Pixel Cute Animals (2D 동물 캐릭터, 픽셀 스타일도 있음) :
+https://assetstore.unity.com/packages/2d/characters/20-animated-pixel-cute-animals-275763
+
+4) Cute Animal Pet (Penguin) (3D 펭귄, 몸통/목도리 색 변경 가능) :
+https://assetstore.unity.com/packages/3d/characters/animals/cute-animal-pet-penguin-146845
+* 다른 동물 시리즈도 있는데 안 귀여움
+
+5) Cute-Animal_Bear (3D 곰돌이, 다른 시리즈도 있음 - 개별 구매) :
+https://assetstore.unity.com/packages/3d/characters/animals/cute-animal-bear-197113
+
+5-1) Cute-Animal_ Raccoon (3D 라쿤) :
+https://assetstore.unity.com/packages/3d/characters/animals/cute-animal-raccoon-196957
+
+5-2) Cute-Animal_Sheep (3D 양) :
+https://assetstore.unity.com/packages/3d/characters/animals/cute-animal-sheep-197176
+
+5-3) Cute-Animal_ Wolf (3D 늑대) :
+https://assetstore.unity.com/packages/3d/characters/animals/cute-animal-wolf-196542
+
+[ 배경 ] - 무료
+1) Free Low Poly Nature Forest (3D, 숲, 동물의숲 느낌) :
+https://assetstore.unity.com/packages/3d/environments/landscapes/free-low-poly-nature-forest-205742
+
+2) Fantasy Forest Environment - Free Demo (3D? 2D?, 그냥 배경뿐) : 
+https://assetstore.unity.com/packages/3d/environments/fantasy/fantasy-forest-environment-free-demo-35361
+
+3) Glowing Forest (3D, 동물의 숲 느낌2) :
+https://assetstore.unity.com/packages/3d/environments/fantasy/glowing-forest-79686
+
+4) Environment Pack: Free Forest Sample (3D) :
+https://assetstore.unity.com/packages/3d/vegetation/environment-pack-free-forest-sample-168396
+
+[ 배경 ] - 유료
+1) Pixel Art Forest Kit (2D, pack) : 
+https://assetstore.unity.com/packages/2d/environments/pixel-art-forest-kit-13985
+
+2) 2D Cartoon Forest Environment (2D, 여름/가을/겨울) :
+https://assetstore.unity.com/packages/2d/environments/2d-cartoon-forest-environment-68684
