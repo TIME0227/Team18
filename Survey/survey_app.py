@@ -84,7 +84,7 @@ if model_type == "상냥한 친구":
     # 모델 설명 텍스트
     st.markdown("### 상담사 설명: 상냥한 친구")
     st.markdown("- 당신만을 생각하고 위하는 순수하고 상냥한 친구입니다.")
-    st.markdown("- 일상적인 애기와 고민을 나눠보세요.")
+    st.markdown("- 일상적인 얘기와 고민을 나눠보세요.")
 if model_type == "시니컬한 상담사":
     # 선택한 모델을 바꾸면 대화내역 초기화
     if st.session_state['currModel'] != "시니컬한 상담사":
