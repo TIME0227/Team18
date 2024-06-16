@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Ignore config.json in Assets/Scripts
+/[Aa]ssets/[Ss]cripts/config.json
+/[Aa]ssets/[Ss]cripts/config.json.meta
