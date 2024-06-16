@@ -16,7 +16,7 @@
 
 ### ✏️ 사용 기술
 <a href="https://unity.com/kr" target="_blank"><img src="https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white"/></a><br>
-<a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor="white"/></a> gpt-4o<br>
+<a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> gpt-4o<br>
 <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>
 
 ### 📝 기술검증
