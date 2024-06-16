@@ -39,4 +39,5 @@
 1. Unity에 chatGPT API 연결 - 완료
 2. 4가지 스타일의 상담사 프롬프트 작성 & 테스트 - 완료
    + 체험 : https://team18-nnpkyfvownh9obzlnmdztd.streamlit.app/
+   + 시연 영상 : https://youtu.be/2KhGn7ZIvBc
 3. Clova or Azure STT / TTS 테스트
