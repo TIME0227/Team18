@@ -32,8 +32,10 @@
 
 ### ✏️ 사용 기술
 <a href="https://unity.com/kr" target="_blank"><img src="https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white"/></a><br>
-<a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> gpt-4o<br>
-<img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>
+<a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> gpt-4o (LLM)<br>
+<a href="https://clova.ai/speech" target="_blank"><img src="https://img.shields.io/badge/Clova-03c75a?style=for-the-badge&logoColor=white"/></a> Naver Clova Speech (STT)<br>
+<a href="https://clova.ai/voice/" target="_blank"><img src="https://img.shields.io/badge/Clova-03c75a?style=for-the-badge&logoColor=white"/></a> Naver Clova Voice (TTS)<br>
+<a href="https://sqlite.org/" target="_blank"><img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/></a>
 
 ### 📝 기술검증
 1. Unity에 chatGPT API 연결 - 완료
