@@ -20,3 +20,6 @@
 <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>
 
 ### 📝 기술검증
+1. A
+2. B
+3. C
