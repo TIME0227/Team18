@@ -14,12 +14,29 @@
   + 친근하고 귀여운 가상의 동물 캐릭터로 심리적 장벽 완화
   + 게이미피케이션 요소로 지속적인 상담 유도
 
+### 😊 상담사 리스트
+1. 인지 치료 상담사
+- 불안과 우울에 효과적이라고 알려져 있어요
+- 우리가 불안하고 우울한 이유는 부정적이고 극단적인 사고 때문일 확률이 커요. 부정적 사고 대신  유연한 사고를 같이 찾아나가는 과정입니다.
+
+2. WDEP 상담사
+- 내가 진짜 원하는 이상적 세계는 무엇인지 찾아 보고 이상적 세계에 가까워지기 위한 계획을 같이 세워나가는 과정입니다. 
+
+3. 상냥한 친구
+- 당신만을 생각하고 위하는 순수하고 상냥한 친구입니다.
+- 일상적인 얘기와 고민을 나눠보세요.
+
+4. 현실적이고 시니컬한 상담사
+- MBTI가 T 유형인 분들에게 추천드려요
+- 현실적이고 맞는 말만 하는 조언을 듣고 싶다면 대화해보세요.
+
 ### ✏️ 사용 기술
 <a href="https://unity.com/kr" target="_blank"><img src="https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white"/></a><br>
 <a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> gpt-4o<br>
 <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>
 
 ### 📝 기술검증
-1. A
-2. B
-3. C
+1. Unity에 chatGPT API 연결 - 완료
+2. 4가지 스타일의 상담사 프롬프트 작성 & 테스트 - 완료
+   체험 : https://team18-nnpkyfvownh9obzlnmdztd.streamlit.app/
+3. Clova or Azure STT / TTS 테스트
