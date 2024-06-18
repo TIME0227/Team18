@@ -43,3 +43,4 @@
    + 체험 : https://team18-nnpkyfvownh9obzlnmdztd.streamlit.app/
    + 시연 영상 : https://youtu.be/2KhGn7ZIvBc
 3. 상담사의 감정표현을 선택하는 프롬프트 작성 & 테스트
+4. 요약을 통한 이전 대화 기억 프롬프트 작성
