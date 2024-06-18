@@ -38,8 +38,8 @@
 <a href="https://sqlite.org/" target="_blank"><img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/></a>
 
 ### 📝 기술검증
-1. Unity에 chatGPT API 연결 - 완료
-2. 4가지 스타일의 상담사 프롬프트 작성 & 테스트 - 완료
+1. Unity에 chatGPT API 연결
+2. 4가지 스타일의 상담사 프롬프트 작성 & 테스트
    + 체험 : https://team18-nnpkyfvownh9obzlnmdztd.streamlit.app/
    + 시연 영상 : https://youtu.be/2KhGn7ZIvBc
-3. Clova STT / TTS 테스트
+3. 상담사의 감정표현을 선택하는 프롬프트 작성 & 테스트
