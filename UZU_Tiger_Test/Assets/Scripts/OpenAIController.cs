@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,31 +8,26 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Text;
-using Unity.VisualScripting;
 using System.IO;
 
 public class OpenAIController : MonoBehaviour
 {
     public TMP_Text textField;
     public TMP_InputField inputField;
-    public Button okButton;
+    public ScrollRect scrollRect;  // ScrollRect를 참조
 
     public string systemMessage;
-
     public Animator animator;
 
     private string apiKey;  // OpenAI API key
-
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    // save the chat history
+    // Save the chat history
     private List<Message> messages;
 
     // Start is called before the first frame update
     void Start()
     {
-
-        okButton.onClick.AddListener(OnOkButtonClick);
         inputField.text = "";
 
         // Initialize the messages list and add the system message
@@ -50,6 +44,9 @@ public class OpenAIController : MonoBehaviour
             Debug.LogError("API key is not set. Please check the config.json file.");
             return;
         }
+
+        // Listen for Enter key in the input field
+        inputField.onSubmit.AddListener(delegate { OnEnterKeyPressed(); });
     }
 
     private void LoadApiKey()
@@ -70,7 +67,7 @@ public class OpenAIController : MonoBehaviour
         }
     }
 
-    private void OnOkButtonClick()
+    private void OnEnterKeyPressed()
     {
         string prompt = inputField.text;
 
@@ -79,18 +76,16 @@ public class OpenAIController : MonoBehaviour
             return;
         }
 
-        // Disable the OK button
-        okButton.enabled = false;
-
         if (prompt.Length > 100)
         {
             // Limit messages to 100 characters
             prompt = prompt.Substring(0, 100);
         }
+
         Debug.Log(string.Format("Your Prompt: {0}", prompt));
 
-        // Update the text field with the user message
-        textField.text = string.Format("당신: {0}", prompt);
+        // Add a newline before the user message for better readability
+        textField.text += string.Format("\n\n당신: {0}", prompt);
 
         // Clear the input field
         inputField.text = "";
@@ -142,29 +137,44 @@ public class OpenAIController : MonoBehaviour
         }
     }
 
+    public void ResetConversation()
+    {
+        // 메시지 리스트 초기화 및 시스템 메시지 다시 추가
+        messages.Clear();
+        messages.Add(new Message { role = "system", content = systemMessage });
+
+        // 텍스트 필드 초기화
+        textField.text = "";
+
+        Debug.Log("대화 기록이 초기화되었습니다.");
+    }
+
     private void OnResponseReceived(string response)
     {
         Debug.Log("ChatGPT Response: " + response);
 
         // 애니메이션 업데이트
-        // response에서 구분자로 슬라이스, 앞의 답변 부분을 response에 다시 저장
         string[] responseSp = response.Split("#"); // 애니메이션 지시어 저장
 
         Debug.Log("제스처: " + responseSp[1]);
 
         UpdateAnimation(responseSp[1]);
 
-        // Update the text field with the response
+        // Add a newline before the assistant message for better readability
         textField.text += string.Format("\n\nAI상담사: {0}", responseSp[0]);
 
-        // Re-enable the OK button
-        okButton.enabled = true;
+        // 자동 스크롤
+        Canvas.ForceUpdateCanvases();
+        textField.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 0f;
+
+        // Focus the input field to allow for quick subsequent inputs
+        inputField.Select();
+        inputField.ActivateInputField();
     }
 
     private void UpdateAnimation(string state)
     {
         // 상태에 따른 애니메이션 전환
-        //Attack, Bounce, Clicked, Death, Eat, Fear, Fly, Hit, Idle_A, Idle_B, Idle_C, Jump, Roll, Run, Sit, Spin, Swim, Walk
         if (state == "Attack")
         {
             animator.Play("Attack");
@@ -237,8 +247,6 @@ public class OpenAIController : MonoBehaviour
         {
             animator.Play("Walk");
         }
-
-        // 필요한 만큼 상태와 애니메이션을 추가
     }
 
     [System.Serializable]
