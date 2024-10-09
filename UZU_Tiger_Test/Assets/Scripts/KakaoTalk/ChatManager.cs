@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
+using UnityEngine.SceneManagement;
 
 
 
@@ -21,10 +23,10 @@ public class ChatManager : MonoBehaviour
         else Chat(false, text, "타인", null);
     }*/
 
-    public void ReceiveMessage(string text)
+    /*public void ReceiveMessage(string text)
     {
-        Chat(false, text, "토르", Resources.Load<Texture2D>("ETC/자른톨"));  // 토르의 응답은 하얀색으로
-    }
+        Chat(false, text, "토르", Resources.Load<Texture2D>("ETC/자른톨"));  // GPT의 응답은 하얀색으로
+    }*/
 
     public void SendMessage(string text)
     {
@@ -42,8 +44,27 @@ public class ChatManager : MonoBehaviour
 
     public void ReceiveGPTResponse(string gptResponse)
     {
-        // GPT(토르)의 응답을 흰색 말풍선으로 표시
-        Chat(false, gptResponse, "상담사", null);
+        // GPT의 응답을 흰색 말풍선으로 표시
+        // Chat(false, gptResponse, "상담사", null);
+
+        switch (PlayerPrefs.GetString("NPCName"))
+        {
+            case "KindNPC":
+                Chat(false, gptResponse, "상냥한 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                break;
+
+            case "CynicalNPC":
+                Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                break;
+
+            case "WDEPNPC":
+                Chat(false, gptResponse, "WDEP 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                break;
+
+            case "CognitiveNPC":
+                Chat(false, gptResponse, "인지치료 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                break;
+        }
     }
 
     public void LayoutVisible(bool b)
@@ -151,5 +172,28 @@ public class ChatManager : MonoBehaviour
 
 
     void ScrollDelay() => scrollBar.value = 0;
+
+    
+    public void OnClick_reportStorageBtn()
+    {
+        // 대화 기록 보관 기능 생기면 주석 해제
+        // SceneManager.LoadScene("ReportStorage");
+        Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
+    }
+
+    public void OnClick_saveDialogueBtn()
+    {
+        // 기능 구현 필요
+
+        Debug.Log("대화를 저장합니다.");
+    }
+
+    public void OnClick_closeChatBtn()
+    {
+        SceneManager.LoadScene("Main");
+        Debug.Log("대화를 종료합니다.");
+    }
+
+
 
 }

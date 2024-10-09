@@ -48,7 +48,7 @@ class  SubActivity{
             send_btn_view.setOnClickListener{
 
                 // 호출할 게임오브젝트 이름, 함수명, 매개변수 하나
-                UnityPlayer.UnitySendMessage("ChatManager", "ReceiveMessage", send_et_view.text.toString())
+                UnityPlayer.UnitySendMessage("ChatManager", "ReceiveGPTResponse", send_et_view.text.toString())
                 send_et_view.setText("")
             }
 
