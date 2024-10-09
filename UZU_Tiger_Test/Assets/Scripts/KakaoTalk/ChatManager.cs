@@ -15,12 +15,36 @@ public class ChatManager : MonoBehaviour
     AreaScript LastArea;
 
 
-    public void ReceiveMessage(string text)
+    /*public void ReceiveMessage(string text)
     {
         if (MineToggle.isOn) Chat(true, text, "나", null);
         else Chat(false, text, "타인", null);
+    }*/
+
+    public void ReceiveMessage(string text)
+    {
+        Chat(false, text, "토르", Resources.Load<Texture2D>("ETC/자른톨"));  // 토르의 응답은 하얀색으로
     }
 
+    public void SendMessage(string text)
+    {
+        Chat(true, text, "나", null);  // 내가 보낸 메시지는 노란색으로
+    }
+
+    public void SendUserMessage(string userMessage)
+    {
+        // 사용자가 보낸 메시지를 노란색 말풍선으로 표시
+        Chat(true, userMessage, "나", null);
+
+        // OpenAIController를 통해 GPT 응답 요청
+        FindObjectOfType<OpenAIController>().SendMessageToAI(userMessage);
+    }
+
+    public void ReceiveGPTResponse(string gptResponse)
+    {
+        // GPT(토르)의 응답을 흰색 말풍선으로 표시
+        Chat(false, gptResponse, "상담사", null);
+    }
 
     public void LayoutVisible(bool b)
     {

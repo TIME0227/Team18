@@ -23,17 +23,11 @@ public class ChatEditor : Editor
         EditorGUILayout.BeginHorizontal();
         text = EditorGUILayout.TextArea(text);
 
+        // 사용자가 입력한 메시지를 보내기 버튼을 통해 처리
         if (GUILayout.Button("보내기", GUILayout.Width(60)) && text.Trim() != "")
         {
-            chatManager.Chat(true, text, "나", null);
-            text = "";
-            GUI.FocusControl(null);
-        }
-
-        if (GUILayout.Button("받기", GUILayout.Width(60)) && text.Trim() != "")
-        {
-            // chatManager.Chat(false, text, "타인", null);
-            chatManager.Chat(false, text, "토르", Resources.Load<Texture2D>("ETC/자른톨"));
+            // 사용자의 메시지를 보내고 화면에 표시
+            chatManager.SendUserMessage(text);
             text = "";
             GUI.FocusControl(null);
         }

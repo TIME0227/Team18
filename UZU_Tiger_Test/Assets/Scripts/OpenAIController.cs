@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Text;
@@ -12,41 +10,30 @@ using System.IO;
 
 public class OpenAIController : MonoBehaviour
 {
-    public TMP_Text textField;
-    public TMP_InputField inputField;
-    public ScrollRect scrollRect;  // ScrollRect를 참조
-
-    public string systemMessage;
-    public Animator animator;
-
-    private string apiKey;  // OpenAI API key
+    public string systemMessage;  // 시스템 메시지
+    private string apiKey;  // OpenAI API 키
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    // Save the chat history
+    // 채팅 기록을 저장할 리스트
     private List<Message> messages;
 
     // Start is called before the first frame update
     void Start()
     {
-        inputField.text = "";
-
-        // Initialize the messages list and add the system message
+        // 메시지 리스트 초기화 및 시스템 메시지 추가
         messages = new List<Message>
         {
             new Message { role = "system", content = systemMessage }
         };
 
-        // Load the API key from config.json
+        // API 키 로드
         LoadApiKey();
 
         if (string.IsNullOrEmpty(apiKey))
         {
-            Debug.LogError("API key is not set. Please check the config.json file.");
+            Debug.LogError("API 키가 설정되지 않았습니다. config.json 파일을 확인하세요.");
             return;
         }
-
-        // Listen for Enter key in the input field
-        inputField.onSubmit.AddListener(delegate { OnEnterKeyPressed(); });
     }
 
     private void LoadApiKey()
@@ -63,49 +50,41 @@ public class OpenAIController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("config.json file not found.");
+            Debug.LogError("config.json 파일을 찾을 수 없습니다.");
         }
     }
 
-    private void OnEnterKeyPressed()
+    // 사용자가 메시지를 보냈을 때 GPT에게 메시지를 보내는 함수
+    public void SendMessageToAI(string userMessage)
     {
-        string prompt = inputField.text;
-
-        if (prompt.Length < 1)
+        if (userMessage.Length < 1)
         {
             return;
         }
 
-        if (prompt.Length > 100)
+        // 메시지 길이 제한
+        if (userMessage.Length > 100)
         {
-            // Limit messages to 100 characters
-            prompt = prompt.Substring(0, 100);
+            userMessage = userMessage.Substring(0, 100);
         }
 
-        Debug.Log(string.Format("Your Prompt: {0}", prompt));
+        // 메시지 리스트에 사용자 메시지 추가
+        messages.Add(new Message { role = "user", content = userMessage });
 
-        // Add a newline before the user message for better readability
-        textField.text += string.Format("\n\n당신: {0}", prompt);
-
-        // Clear the input field
-        inputField.text = "";
-
-        // Add the user message to the messages list
-        messages.Add(new Message { role = "user", content = prompt });
-
-        SendRequest(prompt, OnResponseReceived);
+        // OpenAI API에 요청 보내기
+        SendRequest(userMessage, OnResponseReceived);
     }
 
-    public void SendRequest(string prompt, System.Action<string> callback)
+    public void SendRequest(string prompt, Action<string> callback)
     {
         StartCoroutine(PostRequest(prompt, callback));
     }
 
-    private IEnumerator PostRequest(string prompt, System.Action<string> callback)
+    private IEnumerator PostRequest(string prompt, Action<string> callback)
     {
         var requestData = new
         {
-            model = "gpt-4o",  // 모델 이름을 "gpt-4o"
+            model = "gpt-4",  // 모델 이름 설정
             messages = messages.ToArray(),
             max_tokens = 150
         };
@@ -130,125 +109,43 @@ public class OpenAIController : MonoBehaviour
             var response = JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text);
             string responseContent = response.choices[0].message.content.Trim();
 
-            // Add the assistant response to the messages list
+            // 응답 메시지 리스트에 추가
             messages.Add(new Message { role = "assistant", content = responseContent });
 
+            // 콜백을 통해 응답 처리
             callback(responseContent);
         }
     }
 
-    public void ResetConversation()
-    {
-        // 메시지 리스트 초기화 및 시스템 메시지 다시 추가
-        messages.Clear();
-        messages.Add(new Message { role = "system", content = systemMessage });
-
-        // 텍스트 필드 초기화
-        textField.text = "";
-
-        Debug.Log("대화 기록이 초기화되었습니다.");
-    }
-
+    /*// 응답을 받았을 때 호출되는 메서드
     private void OnResponseReceived(string response)
     {
         Debug.Log("ChatGPT Response: " + response);
 
-        // 애니메이션 업데이트
-        string[] responseSp = response.Split("#"); // 애니메이션 지시어 저장
+        // 토르의 응답을 하얀 말풍선으로 화면에 표시
+        FindObjectOfType<ChatManager>().ReceiveMessage(response);
+    }*/
 
-        Debug.Log("제스처: " + responseSp[1]);
-
-        UpdateAnimation(responseSp[1]);
-
-        // Add a newline before the assistant message for better readability
-        textField.text += string.Format("\n\nAI상담사: {0}", responseSp[0]);
-
-        // 자동 스크롤
-        Canvas.ForceUpdateCanvases();
-        textField.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 0f;
-
-        // Focus the input field to allow for quick subsequent inputs
-        inputField.Select();
-        inputField.ActivateInputField();
-    }
-
-    private void UpdateAnimation(string state)
+    // 응답을 받았을 때 호출되는 메서드
+    private void OnResponseReceived(string response)
     {
-        // 상태에 따른 애니메이션 전환
-        if (state == "Attack")
-        {
-            animator.Play("Attack");
-        }
-        else if (state == "Bounce")
-        {
-            animator.Play("Bounce");
-        }
-        else if (state == "Clicked")
-        {
-            animator.Play("Clicked");
-        }
-        else if (state == "Death")
-        {
-            animator.Play("Death");
-        }
-        else if (state == "Eat")
-        {
-            animator.Play("Eat");
-        }
-        else if (state == "Fear")
-        {
-            animator.Play("Fear");
-        }
-        else if (state == "Fly")
-        {
-            animator.Play("Fly");
-        }
-        else if (state == "Hit")
-        {
-            animator.Play("Hit");
-        }
-        else if (state == "Idle_A")
-        {
-            animator.Play("Idle_A");
-        }
-        else if (state == "Idle_B")
-        {
-            animator.Play("Idle_B");
-        }
-        else if (state == "Idle_C")
-        {
-            animator.Play("Idle_C");
-        }
-        else if (state == "Jump")
-        {
-            animator.Play("Jump");
-        }
-        else if (state == "Roll")
-        {
-            animator.Play("Roll");
-        }
-        else if (state == "Run")
-        {
-            animator.Play("Run");
-        }
-        else if (state == "Sit")
-        {
-            animator.Play("Sit");
-        }
-        else if (state == "Spin")
-        {
-            animator.Play("Spin");
-        }
-        else if (state == "Swim")
-        {
-            animator.Play("Swim");
-        }
-        else if (state == "Walk")
-        {
-            animator.Play("Walk");
-        }
+        Debug.Log("ChatGPT Response: " + response);
+
+        // ChatManager를 통해 GPT 응답을 흰색 말풍선으로 화면에 표시
+        FindObjectOfType<ChatManager>().ReceiveGPTResponse(response);
     }
 
+
+    // 대화 초기화
+    public void ResetConversation()
+    {
+        messages.Clear();
+        messages.Add(new Message { role = "system", content = systemMessage });
+
+        Debug.Log("대화 기록이 초기화되었습니다.");
+    }
+
+    // OpenAI 응답 구조체 정의
     [System.Serializable]
     private class OpenAIResponse
     {

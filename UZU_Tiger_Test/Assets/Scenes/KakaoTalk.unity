@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -764,6 +764,7 @@ GameObject:
   m_Component:
   - component: {fileID: 290621282}
   - component: {fileID: 290621281}
+  - component: {fileID: 290621283}
   m_Layer: 0
   m_Name: ChatManager
   m_TagString: Untagged
@@ -804,6 +805,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &290621283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290621280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e4a4111130aea74180737a0d1a28130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemMessage: "\uC0C1\uB0E5\uD558\uAC8C \uB300\uB2F5\uD558\uAE30"
 --- !u!1 &295970673
 GameObject:
   m_ObjectHideFlags: 0
