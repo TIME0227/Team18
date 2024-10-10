@@ -240,6 +240,20 @@ public class OpenAIController : MonoBehaviour
         Debug.Log("대화 기록이 초기화되었습니다.");
     }
 
+    // 대화 요약본 생성
+    public void createDialogueSummary()
+    {
+        // GPT에게 요약본 생성해달라하고 (사용자에게는 해당 내용이 안 보이게)
+
+
+        // 생성된 요약본 DB에 저장
+
+        Debug.Log("현재 대화 내역의 요약본이 생성되었습니다.");
+
+    }
+
+
+
     // OpenAI 응답 구조체 정의
     [System.Serializable]
     private class OpenAIResponse

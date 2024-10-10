@@ -191,9 +191,13 @@ public class ChatManager : MonoBehaviour
     
     public void OnClick_reportStorageBtn()
     {
-        // 대화 기록 보관 기능 생기면 주석 해제
-        // SceneManager.LoadScene("ReportStorage");
-        Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
+        // 저장하는 기능 구현 필요
+
+        // 요약본(text 형식) 생성 함수 호출
+        FindObjectOfType<OpenAIController>().createDialogueSummary();
+
+        SceneManager.LoadScene("ReportStorage");
+        // Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
     }
 
     /*public void OnClick_saveDialogueBtn()
@@ -205,7 +209,9 @@ public class ChatManager : MonoBehaviour
 
     public void OnClick_closeChatBtn()
     {
-        // 기능 구현 필요
+        // 요약본(text 형식) 생성 함수 호출
+        FindObjectOfType<OpenAIController>().createDialogueSummary();
+
 
         SceneManager.LoadScene("Main");
         Debug.Log("대화를 종료하고 저장합니다.");
