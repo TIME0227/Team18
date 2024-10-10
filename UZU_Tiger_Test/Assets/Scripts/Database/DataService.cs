@@ -122,22 +122,28 @@ public class DataService  {
      */
 
     // 대화시작 시 이전대화 기억용 프롬프트에 넣을 요약본을 생성하여 반환하는 함수
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
-    public string GetConversationHistory(int counselor_id)
+    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical, 리포트 생성을 위해 쓸 때는 is_sessionlog = false로 전달
+    public string GetConversationHistory(int counselor_id, bool is_sessionlog = true)
     {
         var summaries = GetNotReportedSessionLog(counselor_id);
-        var metasummaries = GetReportLog(counselor_id);
         string result = "";
 
-        // 요약본 가져오기
         int summaries_count = 0;
-        foreach (var log in metasummaries)
-        {
-            // "1~5번째 대화: 요약본\n" 형식으로 저장
-            result += (summaries_count * 5 + 1) + "~" + (summaries_count * 5 + 5) + "번째 대화: " + log.Summary + "\n";
-            summaries_count++;
-        }
 
+        // 리포트 요약본 가져오기, 리포트 생성할 때에는 필요 없음
+        if (is_sessionlog)
+        {
+            var metasummaries = GetReportLog(counselor_id);
+
+            foreach (var log in metasummaries)
+            {
+                // "1~5번째 대화: 요약본\n" 형식으로 저장
+                result += (summaries_count * 5 + 1) + "~" + (summaries_count * 5 + 5) + "번째 대화: " + log.Summary + "\n";
+                summaries_count++;
+            }
+
+        }
+       
         // 세션기록 가져오기
         int conversation_count = summaries_count * 5 + 1;
         foreach (var log in summaries)
