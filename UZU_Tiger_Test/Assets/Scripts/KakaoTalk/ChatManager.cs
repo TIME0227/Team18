@@ -28,6 +28,7 @@ public class ChatManager : MonoBehaviour
         SendUserMessage(text);
         text = "";
         GUI.FocusControl(null);
+        InputField.text = "";
     }
 
 
@@ -195,17 +196,19 @@ public class ChatManager : MonoBehaviour
         Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
     }
 
-    public void OnClick_saveDialogueBtn()
+    /*public void OnClick_saveDialogueBtn()
     {
         // 기능 구현 필요
 
         Debug.Log("대화를 저장합니다.");
-    }
+    }*/
 
     public void OnClick_closeChatBtn()
     {
+        // 기능 구현 필요
+
         SceneManager.LoadScene("Main");
-        Debug.Log("대화를 종료합니다.");
+        Debug.Log("대화를 종료하고 저장합니다.");
     }
 
 
