@@ -12,6 +12,7 @@ using System.Collections.Generic;
  * 함수 사용 시
  * var ds = new DataService("database.db"); // 데이터베이스 연결
  * 이후 함수 사용 
+ * counselor_id 파라미터는 GetCounselorIdByName("KindNPC") 로 가져올 수 있음
  */
 
 public class DataService  {
@@ -72,6 +73,24 @@ public class DataService  {
 
 	}
 
+    // 상담사의 ID를 반환하는 함수
+    public int GetCounselorIdByName(string npcName)
+    {
+        switch (npcName)
+        {
+            case "CognitiveNPC":
+                return 1;
+            case "WDEPNPC":
+                return 2;
+            case "KindNPC":
+                return 3;
+            case "CynicalNPC":
+                return 4;
+            default:
+                return 1;
+        }
+    }
+
     // 한 상담사의 SessionLog를 모두 반환하는 함수
     // 각 상담사별 SessionLog를 표시할 때 사용
     // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
@@ -126,7 +145,7 @@ public class DataService  {
     public string GetConversationHistory(int counselor_id, bool is_sessionlog = true)
     {
         var summaries = GetNotReportedSessionLog(counselor_id);
-        string result = "";
+        string result = "%%HISTORY_REQUEST%%/n";
 
         int summaries_count = 0;
 
