@@ -11,6 +11,12 @@ using System.Collections.Generic;
 /*
  * 함수 사용 시
  * var ds = new DataService("database.db"); // 데이터베이스 연결
+ * 
+ * ---수정---
+ * DataService ds; 로 전역변수 선언 후
+ * Awake()나 Start()에서 ds = new DataService("database.db"); 로 초기화
+ * ----------
+ * 
  * 이후 함수 사용 
  * counselor_id 파라미터는 GetCounselorIdByName("KindNPC") 로 가져올 수 있음
  */
