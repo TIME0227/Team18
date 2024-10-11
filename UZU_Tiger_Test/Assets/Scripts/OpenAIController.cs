@@ -18,8 +18,6 @@ public class OpenAIController : MonoBehaviour
     private string apiKey;  // OpenAI API 키
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    // public string NPCname = "";
-
     // 채팅 기록을 저장할 리스트
     private List<Message> messages;
 
