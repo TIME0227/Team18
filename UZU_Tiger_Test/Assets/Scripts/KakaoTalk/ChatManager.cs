@@ -65,19 +65,19 @@ public class ChatManager : MonoBehaviour
         switch (PlayerPrefs.GetString("NPCName"))
         {
             case "KindNPC":
-                Chat(false, gptResponse, "상냥한 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                Chat(false, gptResponse, "상냥한 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Pink"));
                 break;
 
             case "CynicalNPC":
-                Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
                 break;
 
             case "WDEPNPC":
-                Chat(false, gptResponse, "WDEP 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                Chat(false, gptResponse, "WDEP 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
                 break;
 
             case "CognitiveNPC":
-                Chat(false, gptResponse, "인지치료 상담새", Resources.Load<Texture2D>("ETC/자른톨"));
+                Chat(false, gptResponse, "인지치료 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Yellow"));
                 break;
         }
     }
@@ -191,17 +191,11 @@ public class ChatManager : MonoBehaviour
     
     public void OnClick_reportStorageBtn()
     {
-        // 대화 기록 보관 기능 생기면 주석 해제
-        // SceneManager.LoadScene("ReportStorage");
-        Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
+        // 저장하는 기능 구현 필요
+        // 요약본(text 형식) 생성 함수 호출
+        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+        SceneManager.LoadScene("ReportStorage");
     }
-
-    /*public void OnClick_saveDialogueBtn()
-    {
-        // 기능 구현 필요
-
-        Debug.Log("대화를 저장합니다.");
-    }*/
 
     public void OnClick_closeChatBtn()
     {

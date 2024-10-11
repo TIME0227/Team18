@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CynicalNPC_Chat.unity
     guid: 06ce6e86c860be248b6495a344906c32
+  - enabled: 1
+    path: Assets/Scenes/ReportStorage.unity
+    guid: 8864e274b1dbf3d47966ca842716afbd
   m_configObjects: {}

@@ -131,9 +131,8 @@ public class MainController : MonoBehaviour
     // 대화 기록 보관 씬으로 이동
     public void OnClick_reportStorageBtn()
     {
-        // 대화 기록 보관 기능 생기면 주석 해제
-         // SceneManager.LoadScene("ReportStorage");
-        Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
+        SceneManager.LoadScene("ReportStorage");
+        // Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
     }
 
 }
