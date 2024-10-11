@@ -71,6 +71,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Ignore config.json in Assets/Scripts
-/[Aa]ssets/[Ss]cripts/config.json
-/[Aa]ssets/[Ss]cripts/config.json.meta
+# Ignore config.json in Assets/StreamingAssets 
+/[Aa]ssets/[Ss]treamingAssets/config.json
+/[Aa]ssets/[Ss]treamingAssets/config.json.meta

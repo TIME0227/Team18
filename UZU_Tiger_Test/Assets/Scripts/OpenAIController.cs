@@ -8,22 +8,27 @@ using Newtonsoft.Json;
 using System.Text;
 using System.IO;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
 
 public class OpenAIController : MonoBehaviour
 {
+    DataService ds;
+
     public string systemMessage;  // 시스템 메시지
     private string apiKey;  // OpenAI API 키
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
     // public string NPCname = "";
 
-
-
     // 채팅 기록을 저장할 리스트
     private List<Message> messages;
 
+    public event Action OnSumaryResponseReceived;
+
     private void Awake()
     {
+        ds = new DataService("database.db"); // 데이터베이스 연결
+
         string npcName = PlayerPrefs.GetString("NPCName", "DefaultNPC");
 
         switch (npcName)
@@ -50,6 +55,7 @@ public class OpenAIController : MonoBehaviour
                 break;
         }
 
+        // 메시지 리스트 초기화 및 시스템 메시지 추가
         messages = new List<Message>
         {
             new Message { role = "system", content = systemMessage }
@@ -62,19 +68,15 @@ public class OpenAIController : MonoBehaviour
     void Start()
     {
         // 메시지 리스트 초기화 및 시스템 메시지 추가
-        messages = new List<Message>
+        /*messages = new List<Message>
         {
             new Message { role = "system", content = systemMessage }
-        };
+        };*/
 
         // API 키 로드
-        LoadApiKey();
+        LoadApiKey(); // 키 로드 후 저장된 대화기록 가져옴
 
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            Debug.LogError("API 키가 설정되지 않았습니다. config.json 파일을 확인하세요.");
-            return;
-        }
+        // SendPreviousChatsToAI();       
     }
 
     /*private void LoadApiKey()
@@ -102,7 +104,7 @@ public class OpenAIController : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android)
         {
             // 안드로이드에서는 UnityWebRequest를 사용해서 StreamingAssets에서 파일을 읽어옵니다.
-            StartCoroutine(LoadApiKeyFromAndroid(configPath));
+            StartCoroutine(LoadApiKeyFromAndroid(configPath, SendPreviousChatsToAI));
         }
         else
         {
@@ -120,10 +122,18 @@ public class OpenAIController : MonoBehaviour
             {
                 Debug.LogError("config.json 파일을 찾을 수 없습니다.");
             }
+
+            SendPreviousChatsToAI();
         }
+
+        
+        //else
+        //{
+        //    onComplete?.Invoke(); // api 키가 정상적이면 onComplete 호출하여 SendPreviousChatsToAI()가 실행되도록 함
+        //}
     }
 
-    private IEnumerator LoadApiKeyFromAndroid(string configPath)
+    private IEnumerator LoadApiKeyFromAndroid(string configPath, Action onComplete)
     {
         UnityWebRequest request = UnityWebRequest.Get(configPath);
         yield return request.SendWebRequest();
@@ -145,6 +155,7 @@ public class OpenAIController : MonoBehaviour
                 Debug.LogError("config.json에서 API 키를 찾을 수 없습니다.");
             }
         }
+        onComplete?.Invoke();
     }
 
 
@@ -157,14 +168,16 @@ public class OpenAIController : MonoBehaviour
             return;
         }
 
-        // 메시지 길이 제한
-        if (userMessage.Length > 100)
+        // 메시지 길이 제한 - 이전대화내역 보내기 위해 길이 제한 늘림
+        if (userMessage.Length > 500)
         {
-            userMessage = userMessage.Substring(0, 100);
+            userMessage = userMessage.Substring(0, 500);
         }
 
         // 메시지 리스트에 사용자 메시지 추가
         messages.Add(new Message { role = "user", content = userMessage });
+
+        Debug.Log("User Request: " + userMessage);
 
         // OpenAI API에 요청 보내기
         SendRequest(userMessage, OnResponseReceived);
@@ -179,7 +192,7 @@ public class OpenAIController : MonoBehaviour
     {
         var requestData = new
         {
-            model = "gpt-4",  // 모델 이름 설정
+            model = "gpt-4o",  // 모델 이름 설정
             messages = messages.ToArray(),
             max_tokens = 150
         };
@@ -226,8 +239,39 @@ public class OpenAIController : MonoBehaviour
     {
         Debug.Log("ChatGPT Response: " + response);
 
-        // ChatManager를 통해 GPT 응답을 흰색 말풍선으로 화면에 표시
-        FindObjectOfType<ChatManager>().ReceiveGPTResponse(response);
+        if (response.StartsWith("%%SUMMARY_RESPONSE%%")) // 1. 대화 요약 후 저장해야 하는 경우
+        {           
+            response = response.Substring("%%SUMMARY_RESPONSE%%".Length).Trim(); // 코멘트 부분을 삭제
+            // 데이터베이스에 저장
+            ds.CreateSessionLog(response, ds.GetCounselorIdByName(PlayerPrefs.GetString("NPCName", "DefaultNPC")));
+            Debug.Log("대화요약이 세션로그 테이블에 저장되었습니다.");
+            OnSumaryResponseReceived?.Invoke(); // 응답을 받았을 때 이벤트 호출
+            return;
+        }
+        else if (response.StartsWith("%%REPORT_RESPONSE%%")) // 2. 리포트를 생성한 경우
+        {
+            response = response.Substring("%%REPORT_RESPONSE%%".Length).Trim(); // 코멘트 부분을 삭제
+            // content, summary 분리
+            //string content = ~~~
+            //string summary = ~~~
+
+            // 데이터베이스에 저장
+            //ds.CreateReportLog(content, summary, ds.GetCounselorIdByName(PlayerPrefs.GetString("NPCName", "DefaultNPC")))
+
+            return;
+        }
+
+        // 3. 일반적인 채팅 응답
+        // a. NPC의 감정표현 처리
+        string[] responseSp = response.Split("#"); // 감정표현 지시어 저장
+        // 응답에 지시어가 없는 경우 responseSp[1]에 접근하지 않도록 예외처리
+        if (responseSp.Length > 1)
+        {
+            FindObjectOfType<NPCEmotionController>().UpdateNPCEmotion(responseSp[1]);
+
+        }
+        // b. ChatManager를 통해 GPT 응답을 흰색 말풍선으로 화면에 표시
+        FindObjectOfType<ChatManager>().ReceiveGPTResponse(responseSp[0]);
     }
 
 
@@ -238,6 +282,29 @@ public class OpenAIController : MonoBehaviour
         messages.Add(new Message { role = "system", content = systemMessage });
 
         Debug.Log("대화 기록이 초기화되었습니다.");
+    }
+
+    // 이전 대화를 기억하기 위한 유저 메시지를 gpt에 보내고 응답(NPC가 먼저 첫인사)을 받음
+    public void SendPreviousChatsToAI()
+    {
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            Debug.LogError("API 키가 설정되지 않았습니다. config.json 파일을 확인하세요.");
+            return;
+        }
+
+        string chat_history = ds.GetConversationHistory(ds.GetCounselorIdByName(PlayerPrefs.GetString("NPCName", "DefaultNPC")));
+        // Debug.Log(chat_history);
+        SendMessageToAI(chat_history);
+    }
+
+    // 대화 종료 시 채팅 내역 요약을 요청하는 유저 메시지를 gpt에 보내고 응답을 저장
+    public void EndSessionAndSaveChat(Action onComplete)
+    {
+        string chst_summary_request = "이제 사용자와의 상담이 종료되었습니다. 이번 요청에 답할 때, 반드시 \"%%SUMMARY_RESPONSE%%\"라는 키워드를 응답 앞에 포함시켜 주세요. 다음번에 대화할 때 당신이 다시 기억할 수 있을 만큼 가능한 자세하게 500Token 내외로 이번 대화를 요약하세요. 요약한 내용을 사용자가 읽게 되므로 당신의 상담사 역할에 맞게 친근한 말투를 사용하세요. 이 질문에 답할 때, 응답 앞에 \"%%SUMMARY_RESPONSE%%\"를 반드시 포함시키세요. 응답 형식:\"%%SUMMARY_RESPONSE%%요약한 내용\"";
+        SendMessageToAI(chst_summary_request);
+
+        OnSumaryResponseReceived += onComplete; // 콜백 구독
     }
 
     // OpenAI 응답 구조체 정의

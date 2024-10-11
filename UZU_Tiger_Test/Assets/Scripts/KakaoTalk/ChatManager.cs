@@ -205,12 +205,17 @@ public class ChatManager : MonoBehaviour
 
     public void OnClick_closeChatBtn()
     {
-        // 기능 구현 필요
+        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+
+        // 리포트 생성해야 하는지 체크 & 리포트 생성이랑 저장하는 부분도 close 버튼 누를 때 되도록 구현 필요
+
+    }
+
+    private void OnSaveChatComplete()
+    {
+        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnSaveChatComplete; // 구독 해제
 
         SceneManager.LoadScene("Main");
         Debug.Log("대화를 종료하고 저장합니다.");
     }
-
-
-
 }
