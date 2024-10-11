@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1299,6 +1299,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1707940246}
     m_Modifications:
+    - target: {fileID: 2607100897027337298, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: db107b1deb3e6d14d8b9f25082f689d8, type: 2}
+    - target: {fileID: 2607100897027337298, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2607100897027337298, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
+      propertyPath: m_CullingMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8272660235720029736, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
       propertyPath: m_LocalScale.x
       value: 900
@@ -1363,6 +1375,16 @@ PrefabInstance:
 --- !u!4 &767154258 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8272660235720029736, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
+  m_PrefabInstance: {fileID: 767154257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &767154259 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7540462638944482230, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
+  m_PrefabInstance: {fileID: 767154257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &767154260 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2607100897027337298, guid: 748b4e6cf776ffe43a96c591e780615b, type: 3}
   m_PrefabInstance: {fileID: 767154257}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &816919104
@@ -1724,6 +1746,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028732395}
   m_CullTransparentMesh: 1
+--- !u!1 &1122146670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1122146672}
+  - component: {fileID: 1122146671}
+  m_Layer: 0
+  m_Name: NPCEmotionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1122146671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122146670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f466404db7135eb4dab5c78ca986d554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat:
+  - {fileID: 2100000, guid: cedfb5e27ea76e948963e5096ff736a9, type: 2}
+  - {fileID: 2100000, guid: 9146c14ebfba8b546adbcff3dc3ccbf5, type: 2}
+  - {fileID: 2100000, guid: 29cf3ed5f3f7b1a45bb634c9873e6d11, type: 2}
+  - {fileID: 2100000, guid: 55328f24364377e4fb3de022f59cfaef, type: 2}
+  - {fileID: 2100000, guid: 3b6b75e079be3564286de279f7559717, type: 2}
+  - {fileID: 2100000, guid: 9146c14ebfba8b546adbcff3dc3ccbf5, type: 2}
+  - {fileID: 2100000, guid: 016ab4aedab2cfe47bac4d10cbb78b19, type: 2}
+  characterAnimator: {fileID: 767154260}
+  characterRenderer: {fileID: 767154259}
+--- !u!4 &1122146672
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122146670}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6117629, y: -8.930893, z: -8.600191}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1143338419
 GameObject:
   m_ObjectHideFlags: 0
@@ -3216,3 +3292,4 @@ SceneRoots:
   - {fileID: 1791517638}
   - {fileID: 1790631669}
   - {fileID: 189758273}
+  - {fileID: 1122146672}
