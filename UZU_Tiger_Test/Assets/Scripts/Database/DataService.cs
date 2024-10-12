@@ -152,6 +152,11 @@ public class DataService
     // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical, 리포트 생성을 위해 쓸 때는 is_sessionlog = false로 전달
     public string GetConversationHistory(int counselor_id, bool is_sessionlog = true)
     {
+        if(counselor_id == 2 && is_sessionlog == true) // WDEP 상담사는 일회성이라 연속된 대화 제공x
+        {
+            return "지금부터 진행할 상담에 대해 설명을 해줘.";
+        }
+
         var summaries = GetNotReportedSessionLog(counselor_id);
         string result = "%%HISTORY_REQUEST%%/n";
 

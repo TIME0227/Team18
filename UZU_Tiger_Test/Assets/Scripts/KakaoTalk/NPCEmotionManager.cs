@@ -65,7 +65,7 @@ public class NPCEmotionController : MonoBehaviour
     // 감정 키워드를 받아서 적절한 동작 출력
     public void UpdateNPCEmotion(string emotion_keyword)
     {
-        Debug.Log("NPC 감정 키워드 받음: " + emotion_keyword);
+        // Debug.Log("NPC 감정 키워드 받음: " + emotion_keyword);
 
         switch (emotion_keyword)
         {
