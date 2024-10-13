@@ -194,6 +194,9 @@ public class ChatManager : MonoBehaviour
         // 저장하는 기능 구현 필요
         // 요약본(text 형식) 생성 함수 호출
         FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+
+        PlayerPrefs.SetString("NPCName", "ReporterNPC"); // 기록보관 씬에서는 채팅기능 실행되지 않게...
+
         SceneManager.LoadScene("ReportStorage");
     }
 

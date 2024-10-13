@@ -157,13 +157,15 @@ public class DataService
         }
 
         var summaries = GetNotReportedSessionLog(counselor_id);
-        string result = "%%HISTORY_REQUEST%%/n";
+        string result = "리포트 작성과 메타요약본 생성을 부탁할게. 형식-REPORT:(리포트내용)METASUMMARY:(요약한 내용)/n";
 
         int summaries_count = 0;
 
         // 리포트 요약본 가져오기, 리포트 생성할 때에는 필요 없음
         if (is_sessionlog)
         {
+            result = "이전에 나눈 대화인데 지금 새로 대화할 때 기억하는 것 처럼 참고하고, 안부 묻는 첫인사를 해줘./n";
+
             var metasummaries = GetReportLog(counselor_id);
 
             foreach (var log in metasummaries)
@@ -206,7 +208,7 @@ public class DataService
      */
 
     // ReportLog Table에 insert하는 함수
-    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
+    // 1:Cognitive, 3:Kind, 4:Cynical (장점찾기 상담사는 리포트를 만들지 않음)
     public ReportLog CreateReportLog(string content, string summary, int counselor_id)
     {
         var p = new ReportLog
