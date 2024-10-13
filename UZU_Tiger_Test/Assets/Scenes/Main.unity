@@ -29327,7 +29327,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "WDEP \uC0C1\uB2F4\uC0C8"
+  m_text: "\uC7A5\uC810\uCC3E\uAE30 \uC0C1\uB2F4\uC0C8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d783f5cec4f769d40b59c7db45bb1ab5, type: 2}
   m_sharedMaterial: {fileID: 8849859341924171161, guid: d783f5cec4f769d40b59c7db45bb1ab5, type: 2}

@@ -41,7 +41,7 @@ public class MainController : MonoBehaviour
                         break;
 
                     case "WDEPNPC":
-                        PlayerPrefs.SetString("NPCName", "WDEPNPC");
+                        PlayerPrefs.SetString("NPCName", "StrengthNPC");
                         showNPCInfo(hit.transform.name);
                         // Debug.Log(hit.transform.name);
                         break;
@@ -100,7 +100,7 @@ public class MainController : MonoBehaviour
                 SceneManager.LoadScene("CynicalNPC_Chat");
                 break;
 
-            case "WDEPNPC":
+            case "StrengthNPC":
                 SceneManager.LoadScene("WDEPNPC_Chat");
                 break;
 

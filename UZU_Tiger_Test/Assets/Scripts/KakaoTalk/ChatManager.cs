@@ -72,8 +72,8 @@ public class ChatManager : MonoBehaviour
                 Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
                 break;
 
-            case "WDEPNPC":
-                Chat(false, gptResponse, "WDEP 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
+            case "StrengthNPC":
+                Chat(false, gptResponse, "장점찾기 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
                 break;
 
             case "CognitiveNPC":
