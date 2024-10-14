@@ -41,7 +41,7 @@ public class MainController : MonoBehaviour
                         break;
 
                     case "WDEPNPC":
-                        PlayerPrefs.SetString("NPCName", "WDEPNPC");
+                        PlayerPrefs.SetString("NPCName", "StrengthNPC");
                         showNPCInfo(hit.transform.name);
                         // Debug.Log(hit.transform.name);
                         break;
@@ -100,7 +100,7 @@ public class MainController : MonoBehaviour
                 SceneManager.LoadScene("CynicalNPC_Chat");
                 break;
 
-            case "WDEPNPC":
+            case "StrengthNPC":
                 SceneManager.LoadScene("WDEPNPC_Chat");
                 break;
 
@@ -131,6 +131,8 @@ public class MainController : MonoBehaviour
     // 대화 기록 보관 씬으로 이동
     public void OnClick_reportStorageBtn()
     {
+        PlayerPrefs.SetString("NPCName", "ReporterNPC"); // 기록보관 씬에서는 채팅기능 실행되지 않게...
+
         SceneManager.LoadScene("ReportStorage");
         // Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
     }

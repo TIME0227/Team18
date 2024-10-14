@@ -72,8 +72,8 @@ public class ChatManager : MonoBehaviour
                 Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
                 break;
 
-            case "WDEPNPC":
-                Chat(false, gptResponse, "WDEP 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
+            case "StrengthNPC":
+                Chat(false, gptResponse, "장점찾기 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
                 break;
 
             case "CognitiveNPC":
@@ -194,6 +194,9 @@ public class ChatManager : MonoBehaviour
         // 저장하는 기능 구현 필요
         // 요약본(text 형식) 생성 함수 호출
         FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+
+        PlayerPrefs.SetString("NPCName", "ReporterNPC"); // 기록보관 씬에서는 채팅기능 실행되지 않게...
+
         SceneManager.LoadScene("ReportStorage");
     }
 

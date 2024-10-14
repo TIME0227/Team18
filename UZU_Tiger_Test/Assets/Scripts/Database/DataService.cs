@@ -88,7 +88,7 @@ public class DataService
         {
             case "CognitiveNPC":
                 return 1;
-            case "WDEPNPC":
+            case "StrengthNPC":
                 return 2;
             case "KindNPC":
                 return 3;
@@ -100,8 +100,7 @@ public class DataService
     }
 
     // 한 상담사의 SessionLog를 모두 반환하는 함수
-    // 각 상담사별 SessionLog를 표시할 때 사용
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
+    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
     public IEnumerable<SessionLog> GetSessionLog(int counselor_id = 0)
     {
         if (counselor_id == 0) return _connection.Table<SessionLog>(); // 파라미터 없이 사용할 경우 모든 데이터 반환
@@ -125,7 +124,7 @@ public class DataService
      */
 
     // 리포트 생성에 쓰이지 않은 SessionLog만을 반환
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
+    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
     public IEnumerable<SessionLog> GetNotReportedSessionLog(int counselor_id)
     {
         return _connection.Table<SessionLog>().Where(x => x.Counselor_id == counselor_id && x.Report_id == null);
@@ -149,17 +148,24 @@ public class DataService
      */
 
     // 대화시작 시 이전대화 기억용 프롬프트에 넣을 요약본을 생성하여 반환하는 함수
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical, 리포트 생성을 위해 쓸 때는 is_sessionlog = false로 전달
+    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical, 리포트 생성을 위해 쓸 때는 is_sessionlog = false로 전달
     public string GetConversationHistory(int counselor_id, bool is_sessionlog = true)
     {
+        if(counselor_id == 2 && is_sessionlog == true) // Strength상담사는 일회성이라 연속된 대화 제공x
+        {
+            return "지금부터 진행할 상담에 대해 설명을 해줘.";
+        }
+
         var summaries = GetNotReportedSessionLog(counselor_id);
-        string result = "%%HISTORY_REQUEST%%/n";
+        string result = "리포트 작성과 메타요약본 생성을 부탁할게. 형식-REPORT:(리포트내용)METASUMMARY:(요약한 내용)/n";
 
         int summaries_count = 0;
 
         // 리포트 요약본 가져오기, 리포트 생성할 때에는 필요 없음
         if (is_sessionlog)
         {
+            result = "이전에 나눈 대화인데 지금 새로 대화할 때 기억하는 것 처럼 참고하고, 안부 묻는 첫인사를 해줘./n";
+
             var metasummaries = GetReportLog(counselor_id);
 
             foreach (var log in metasummaries)
@@ -183,7 +189,7 @@ public class DataService
     }
 
     // SessionLog Table에 Insert하는 함수
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
+    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
     public SessionLog CreateSessionLog(string summary, int counselor_id)
     {
         var p = new SessionLog
@@ -202,7 +208,7 @@ public class DataService
      */
 
     // ReportLog Table에 insert하는 함수
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
+    // 1:Cognitive, 3:Kind, 4:Cynical (장점찾기 상담사는 리포트를 만들지 않음)
     public ReportLog CreateReportLog(string content, string summary, int counselor_id)
     {
         var p = new ReportLog
@@ -237,7 +243,7 @@ public class DataService
     }
 
     // SessionLog Table의 특정 레코드 삭제 함수
-    // 1:Cognitive, 2:Wdep, 3:Kind, 4:Cynical
+    // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
     public void DeleteOneSessionLog(int id)
     {
         var sessionLog = _connection.Table<SessionLog>().FirstOrDefault(x => x.Id == id);
