@@ -79,9 +79,9 @@ public class DialogueManager : MonoBehaviour
         canMakeReport_Cynical = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CynicalNPC"));
         canMakeReport_Cognitive = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CognitiveNPC"));
 
-        Debug.Log("canMakeReport_Kind : " + canMakeReport_Kind);
-        Debug.Log("canMakeReport_Cynical : " + canMakeReport_Cynical);
-        Debug.Log("canMakeReport_Cognitive : " + canMakeReport_Cognitive);
+        // Debug.Log("canMakeReport_Kind : " + canMakeReport_Kind);
+        // Debug.Log("canMakeReport_Cynical : " + canMakeReport_Cynical);
+        // Debug.Log("canMakeReport_Cognitive : " + canMakeReport_Cognitive);
 
         if (!canMakeReport_Kind)
             CRB_KindBtnImg.sprite = unActiveSprite;
@@ -137,10 +137,6 @@ public class DialogueManager : MonoBehaviour
 
         // 현재 대화 로그 저장
         sessionLog = log;
-
-        // 리포트 버튼 설정 (대화 내용 5개 이상일시 true, 아니면 false)
-        Image CRB_BtnImg = CRB_Kind.GetComponent<Image>();
-        CRB_BtnImg.sprite = unActiveSprite;
     }
 
 

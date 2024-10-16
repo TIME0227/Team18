@@ -238,7 +238,7 @@ public class OpenAIController : MonoBehaviour
     }*/
 
     // 응답을 받았을 때 호출되는 메서드
-    private void OnResponseReceived(string response)
+    public void OnResponseReceived(string response)
     {
         Debug.Log("ChatGPT Response: " + response);
         string[] responseSp;

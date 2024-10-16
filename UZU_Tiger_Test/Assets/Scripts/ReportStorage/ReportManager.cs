@@ -4,6 +4,7 @@ using TMPro;
 using System.Linq;
 using OpenCover.Framework.Model;
 using System;
+using System.Collections;
 
 public class ReportManager : MonoBehaviour
 {
@@ -22,127 +23,164 @@ public class ReportManager : MonoBehaviour
         Report.SetActive(false);
     }
 
-    // 리포트 생성 & 저장 요청 메서드
 
+    #region CognitiveNPC
     public void OnClick_CreateReport_CognitiveNPC()
     {
-        // 각 NPCname별 혹은 counsler_id에 따라 세팅달리하기
-        // 지금은 테스트용이라 CognitiveNPC로만
+        // NPC 이름 설정
         PlayerPrefs.SetString("NPCName", "CognitiveNPC");
 
-        // 리포트 생성 및 저장 요청
-        FindObjectOfType<OpenAIController>().SendReportRequestToAI();
+        // 리포트 생성 요청
+        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+        openAIController.SendReportRequestToAI();
 
-        // 생성된 리포트 불러오기
-        var reportLogs = ds.GetReportLog(1);
-
-
-        // 맨 첫번째 리포트인듯?
-        ReportLog reportLog = reportLogs.FirstOrDefault();
-
-
-        // 리포트 텍스트 설정
-        Report_Text.text = reportLog.Content;
-
-        // NPC 이름 설정
-        Report_NPCName.text = "인지치료 상담새";
-
-        // NPC 초상화 이미지 설정
-        Image npcPortrait = NPC_portrait;
-        npcPortrait.sprite = npcPortraits[0];
-
-
-        // 리포트 내용 화면에 출력
-        ShowReport();
+        // 리포트 생성 후 처리 대기
+        StartCoroutine(WaitForReportResponse_Cognitive());
 
     }
 
-    public void OnClick_CreateReport_KindNPC()
+    private IEnumerator WaitForReportResponse_Cognitive()
     {
-        // 각 NPCname 따라 세팅 달리하기
-        PlayerPrefs.SetString("NPCName", "KindNPC");
+        // 응답 대기 (필요한 시간만큼 대기)
+        yield return new WaitForSeconds(1.0f); // 필요한 시간으로 설정
 
-        // 리포트 생성 및 저장 요청
-        FindObjectOfType<OpenAIController>().SendReportRequestToAI();
+        // 리포트 생성 후 처리할 메서드 호출
+        OnReportGenerated_Cognitive();
+    }
 
-        // 생성된 리포트 불러오기
-        var reportLogs = ds.GetReportLog(3);
-
-        // 맨 첫번째 리포트인듯?
+    private void OnReportGenerated_Cognitive()
+    {
+        // 리포트 생성이 완료된 후 불러오기
+        var reportLogs = ds.GetReportLog(1);
         ReportLog reportLog = reportLogs.FirstOrDefault();
 
-        foreach (var log in ds.GetReportLog(3))
+        if (reportLog != null)
         {
-            Debug.Log(log.ToString());
-            int id = log.Id;
-            string report_content = log.Content;
-            string summary = log.Summary;
-            DateTime created_at = log.Created_at;
+            // 리포트 텍스트 설정
+            Report_Text.text = reportLog.Content;
+
+            // 리포트 생성 날짜 설정
+            Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
+
+            // NPC 이름 설정
+            Report_NPCName.text = "인지치료 상담새";
+
+            // NPC 초상화 이미지 설정
+            NPC_portrait.sprite = npcPortraits[0];
+
+            // 리포트 내용 화면에 출력
+            ShowReport();
         }
 
-        // 리포트 텍스트 설정
-        Report_Text.text = reportLog.Content;
+        // 이벤트 구독 해제
+        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Cognitive;
+    }
+    #endregion
 
-        // 리포트 생성 날짜 설정
-        Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
-
+    #region KindNPC
+    public void OnClick_CreateReport_KindNPC()
+    {
         // NPC 이름 설정
-        Report_NPCName.text = "상냥한 상담새";
+        PlayerPrefs.SetString("NPCName", "KindNPC");
 
+        // 리포트 생성 요청
+        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+        openAIController.SendReportRequestToAI();
 
-        // NPC 초상화 이미지 설정
-        Image npcPortrait = NPC_portrait;
-        npcPortrait.sprite = npcPortraits[2];
-
-
-        // 리포트 내용 화면에 출력
-        ShowReport();
-
+        // 리포트 생성 후 처리 대기
+        StartCoroutine(WaitForReportResponse());
     }
 
-    public void OnClick_CreateReport_CynicalNPC()
+    private IEnumerator WaitForReportResponse()
     {
-        // 각 NPCname 따라 세팅 달리하기
-        PlayerPrefs.SetString("NPCName", "CynicalNPC");
+        // 응답 대기 (필요한 시간만큼 대기)
+        yield return new WaitForSeconds(2.0f); // 필요한 시간으로 설정
 
-        // 리포트 생성 및 저장 요청
-        FindObjectOfType<OpenAIController>().SendReportRequestToAI();
+        // 리포트 생성 후 처리할 메서드 호출
+        OnReportGenerated_Kind();
+    }
 
-        // 생성된 리포트 불러오기
-        var reportLogs = ds.GetReportLog(4);
-
-/*        // 리포트가 없을 경우에 대한 예외 처리
-        if (reportLogs == null || !reportLogs.Any())
-        {
-            Debug.LogError("Report logs are empty or null.");
-            return;  // 리포트가 없으면 실행 중단
-        }*/
-
-        // 맨 첫번째 리포트인듯?
+    private void OnReportGenerated_Kind()
+    {
+        // 리포트 생성이 완료된 후 불러오기
+        var reportLogs = ds.GetReportLog(3);
         ReportLog reportLog = reportLogs.FirstOrDefault();
 
-        /*        // 리포트가 null일 경우 처리
-                if (reportLog == null)
-                {
-                    Debug.LogError("No report log found.");
-                    return;  // 리포트가 없으면 실행 중단
-                }*/
+        if (reportLog != null)
+        {
+            // 리포트 텍스트 설정
+            Report_Text.text = reportLog.Content;
 
-        // 리포트 텍스트 설정
-        Report_Text.text = reportLog.Content;
+            // 리포트 생성 날짜 설정
+            Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
 
-        // NPC 이름 설정
-        Report_NPCName.text = "시니컬한 상담새";
+            // NPC 이름 설정
+            Report_NPCName.text = "상냥한 상담새";
 
-        // NPC 초상화 이미지 설정
-        Image npcPortrait = NPC_portrait;
-        npcPortrait.sprite = npcPortraits[3];
+            // NPC 초상화 이미지 설정
+            NPC_portrait.sprite = npcPortraits[2];
 
+            // 리포트 내용 화면에 출력
+            ShowReport();
+        }
 
-        // 리포트 내용 화면에 출력
-        ShowReport();
-
+        // 이벤트 구독 해제
+        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Kind;
     }
+    #endregion
+
+
+    #region Cynical
+    public void OnClick_CreateReport_CynicalNPC()
+    {
+        // NPC 이름 설정
+        PlayerPrefs.SetString("NPCName", "CynicalNPC");
+
+        // 리포트 생성 요청
+        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+        openAIController.SendReportRequestToAI();
+
+        // 리포트 생성 후 처리 대기
+        StartCoroutine(WaitForReportResponse_Cynical());
+    }
+
+    private IEnumerator WaitForReportResponse_Cynical()
+    {
+        // 응답 대기 (필요한 시간만큼 대기)
+        yield return new WaitForSeconds(1.0f); // 필요한 시간으로 설정
+
+        // 리포트 생성 후 처리할 메서드 호출
+        OnReportGenerated_Cynical();
+    }
+
+    private void OnReportGenerated_Cynical()
+    {
+        // 리포트 생성이 완료된 후 불러오기
+        var reportLogs = ds.GetReportLog(4);
+        ReportLog reportLog = reportLogs.FirstOrDefault();
+
+        if (reportLog != null)
+        {
+            // 리포트 텍스트 설정
+            Report_Text.text = reportLog.Content;
+
+            // 리포트 생성 날짜 설정
+            Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
+
+            // NPC 이름 설정
+            Report_NPCName.text = "시니컬한 상담새";
+
+            // NPC 초상화 이미지 설정
+            NPC_portrait.sprite = npcPortraits[3];
+
+            // 리포트 내용 화면에 출력
+            ShowReport();
+        }
+
+        // 이벤트 구독 해제
+        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Cynical;
+    }
+    #endregion
 
     public void OnClick_TestReport()
     {
