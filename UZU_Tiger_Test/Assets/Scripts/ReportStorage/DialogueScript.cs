@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-using OpenCover.Framework.Model;
 
 public class DialogueScript : MonoBehaviour
 {

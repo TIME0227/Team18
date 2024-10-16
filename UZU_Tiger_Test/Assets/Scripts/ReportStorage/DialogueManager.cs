@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
-using UnityEditor.AssetImporters;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -79,9 +78,9 @@ public class DialogueManager : MonoBehaviour
         canMakeReport_Cynical = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CynicalNPC"));
         canMakeReport_Cognitive = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CognitiveNPC"));
 
-        // Debug.Log("canMakeReport_Kind : " + canMakeReport_Kind);
-        // Debug.Log("canMakeReport_Cynical : " + canMakeReport_Cynical);
-        // Debug.Log("canMakeReport_Cognitive : " + canMakeReport_Cognitive);
+        Debug.Log("canMakeReport_Kind : " + canMakeReport_Kind);
+        Debug.Log("canMakeReport_Cynical : " + canMakeReport_Cynical);
+        Debug.Log("canMakeReport_Cognitive : " + canMakeReport_Cognitive);
 
         if (!canMakeReport_Kind)
             CRB_KindBtnImg.sprite = unActiveSprite;
