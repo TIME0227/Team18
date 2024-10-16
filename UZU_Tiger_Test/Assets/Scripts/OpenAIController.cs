@@ -333,6 +333,9 @@ public class OpenAIController : MonoBehaviour
     // OnClick 함수에서 npcName 업데이트 후 호출
     public void SendReportRequestToAI()
     {
+        // npcName 새로 가져옴
+        npcName = PlayerPrefs.GetString("NPCName", "DefaultNPC");
+
         // 시스템메시지를 리포트 생성용으로 수정
         switch (npcName)
         {
@@ -353,10 +356,9 @@ public class OpenAIController : MonoBehaviour
                 break;
         }
         // 수정한 시스템메시지로 메시지 리스트 초기화
-        messages = new List<Message>
-        {
-            new Message { role = "system", content = systemMessage }
-        };
+        messages.Clear();
+        messages.Add(new Message { role = "system", content = systemMessage });
+        
 
         // 이전 대화 내역 보냄
         SendPreviousChatsToAI(false); // 리포트 생성 및 저장 진행
