@@ -15,70 +15,68 @@ public class OpenAIController : MonoBehaviour
     DataService ds;
     string npcName;
 
-    string nickname; string sex; string age; string job; // »ç¿ëÀÚ Á¤º¸
+    string nickname; string sex; string age; string job; // ì‚¬ìš©ìž ì •ë³´
 
-    public string systemMessage;  // ½Ã½ºÅÛ ¸Þ½ÃÁö
-    private string apiKey;  // OpenAI API Å°
+    public string systemMessage;  // ì‹œìŠ¤í…œ ë©”ì‹œì§€
+    private string apiKey;  // OpenAI API í‚¤
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    // Ã¤ÆÃ ±â·ÏÀ» ÀúÀåÇÒ ¸®½ºÆ®
+    // ì±„íŒ… ê¸°ë¡ì„ ì €ìž¥í•  ë¦¬ìŠ¤íŠ¸
     private List<Message> messages;
 
     public event Action OnSumaryResponseReceived;
 
     private void Awake()
     {
-        ds = new DataService("database.db"); // µ¥ÀÌÅÍº£ÀÌ½º ¿¬°á
+        ds = new DataService("database.db"); // ë°ì´í„°ë² ì´ìŠ¤ ì—°ê²°
 
         npcName = PlayerPrefs.GetString("NPCName", "DefaultNPC");
 
-        // »ç¿ëÀÚ Á¤º¸
-        nickname = string.IsNullOrEmpty(UserDataManager.GetUserData("Nickname")) ? "ºñ°ø°³" : UserDataManager.GetUserData("Nickname"); // null ¶Ç´Â ºóÄ­ÀÏ °æ¿ì "ºñ°ø°³"·Î ÇÒ´ç
-        sex = string.IsNullOrEmpty(UserDataManager.GetUserData("Sex")) ? "ºñ°ø°³" : UserDataManager.GetUserData("Sex");
-        age = string.IsNullOrEmpty(UserDataManager.GetUserData("Age")) ? "ºñ°ø°³" : UserDataManager.GetUserData("Age");
-        job = string.IsNullOrEmpty(UserDataManager.GetUserData("Job")) ? "ºñ°ø°³" : UserDataManager.GetUserData("Job");
-
-        string CurrentDateTime = DateTime.Now.ToString("MM¿ù ddÀÏ dddd tt h½Ã mmºÐ"); // ÇöÀç½Ã°¢ Á¤º¸, ÀÎÁöÄ¡·á Ä£±¸ ½Ã´ÏÄÃ »ó´ã»çÀÇ ½Ã½ºÅÛ¸Þ½ÃÁö¿¡ È°¿ë
+        // ì‚¬ìš©ìž ì •ë³´
+        nickname = string.IsNullOrEmpty(UserDataManager.GetUserData("Nickname")) ? "ë¹„ê³µê°œ" : UserDataManager.GetUserData("Nickname"); // null ë˜ëŠ” ë¹ˆì¹¸ì¼ ê²½ìš° "ë¹„ê³µê°œ"ë¡œ í• ë‹¹
+        sex = string.IsNullOrEmpty(UserDataManager.GetUserData("Sex")) ? "ë¹„ê³µê°œ" : UserDataManager.GetUserData("Sex");
+        age = string.IsNullOrEmpty(UserDataManager.GetUserData("Age")) ? "ë¹„ê³µê°œ" : UserDataManager.GetUserData("Age");
+        job = string.IsNullOrEmpty(UserDataManager.GetUserData("Job")) ? "ë¹„ê³µê°œ" : UserDataManager.GetUserData("Job");
 
 
         switch (npcName)
         {
             case "KindNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}ÀÌ¾ß. Áö±ÝÀº {CurrentDateTime}\r\n*»ó³ÉÇÑ Ä£±¸ °¡ÀÌµå: ³Ê´Â »ç¿ëÀÚÀÇ Ä£ÇÑ Ä£±¸¾ß.\r\n³Ê´Â ¾ÆÁÖ ÂøÇÏ°í ¹à°í ¼ø¼öÇÏ°í Ä£ÀýÇÏ°í Ä£±¸ÀÇ ¾ê±â¸¦ Àß µé¾îÁà.\r\nÄ£±¸¸¦ ºñÆÇÇÏÁö ¾Ê°í ¼ö¿ëÇÏ°í Á¸ÁßÇÏ¸ç, Ä£±¸ÀÇ ÀÏ¿¡ °ü½ÉÀÌ ¸¹°í °°ÀÌ ÇÏ°í ½ÍÀº °Íµµ ¸¹¾Æ.\r\nÁñ°Å¿î ÀÏ¿£ °°ÀÌ ¿ô°í ½½ÇÂ ÀÏÀº °°ÀÌ ½½ÆÛÇÏ´Â µî °¨Á¤À» ÇÔ²² °øÀ¯ÇÒ ¼ö ÀÖ´Â Ä£±¸¾ß.\r\nÄ£±ÙÇÑ ±¸¾îÃ¼¸¦ »ç¿ëÇÏ°í(¹Ý¸»), 50 token ³»¿ÜÀÇ ´äÀ» ÇØÁà.\r\n*ÀÌÀü ´ëÈ­ ¿ä¾àÀ» Àü´Þ ¹Þ´Â´Ù¸é, ´ëÈ­ ÃÊ±â¿¡´Â ÀÌÀü ´ëÈ­¸¦ Âü°íÇØ¼­ »ç¿ëÀÚÀÇ »óÅÂ¸¦ Ã¼Å©ÇØÁà.\r\n(Àü´Þ ¹ÞÁö ¾Ê´Â´Ù¸é ÀÌ¹ø ´ëÈ­°¡ Ã¹¹øÂ°¾ß)\r\n*ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼Ç:\r\n³×°¡ ´ëÈ­ ¸Æ¶ô»ó ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼ÇÀ» ´ÙÀ½ 7°¡Áö Áß¿¡ °ñ¶ó¼­ ³× ´äº¯ ³¡¿¡ ºÙ¿©Áà.\r\nÇ¥Á¤ ÈÄº¸: 1.°¡¸¸È÷µé¾îÁÖ´Â 2.¿ôÀ¸¸çÀÎ»ç3.²ô´ö²ô´öµé¾îÁÖ´Â4.±â¿î¾ø¾îº¸¿©°ÆÁ¤ÇØÁÖ´Â5.ÀÜ¼Ò¸®ÇÏ´Â6.½Å³ª¼­ÀçÀß°Å¸®´Â7.°°ÀÌ½½ÆÛÇÏ´Â\r\nÇü½Ä: (³ÊÀÇ´äº¯)#¿ôÀ¸¸çÀÎ»ç";
+                systemMessage = $"*ì‚¬ìš©ìž ì •ë³´: ì‚¬ìš©ìžì˜ ë‹‰ë„¤ìž„ì€ {nickname}ì´ê³  ì„±ë³„ì€ {sex}ì´ê³  ë‚˜ì´ëŠ” {age}ì‚´ì´ê³  ì§ì—…ì€ {job}ì´ì•¼. ì§€ê¸ˆì€ {CurrentDateTime}\r\n*ìƒëƒ¥í•œ ì¹œêµ¬ ê°€ì´ë“œ: ë„ˆëŠ” ì‚¬ìš©ìžì˜ ì¹œí•œ ì¹œêµ¬ì•¼.\r\në„ˆëŠ” ì•„ì£¼ ì°©í•˜ê³  ë°ê³  ìˆœìˆ˜í•˜ê³  ì¹œì ˆí•˜ê³  ì¹œêµ¬ì˜ ì–˜ê¸°ë¥¼ ìž˜ ë“¤ì–´ì¤˜.\r\nì¹œêµ¬ë¥¼ ë¹„íŒí•˜ì§€ ì•Šê³  ìˆ˜ìš©í•˜ê³  ì¡´ì¤‘í•˜ë©°, ì¹œêµ¬ì˜ ì¼ì— ê´€ì‹¬ì´ ë§Žê³  ê°™ì´ í•˜ê³  ì‹¶ì€ ê²ƒë„ ë§Žì•„.\r\nì¦ê±°ìš´ ì¼ì—” ê°™ì´ ì›ƒê³  ìŠ¬í”ˆ ì¼ì€ ê°™ì´ ìŠ¬í¼í•˜ëŠ” ë“± ê°ì •ì„ í•¨ê»˜ ê³µìœ í•  ìˆ˜ ìžˆëŠ” ì¹œêµ¬ì•¼.\r\nì¹œê·¼í•œ êµ¬ì–´ì²´ë¥¼ ì‚¬ìš©í•˜ê³ (ë°˜ë§), 50 token ë‚´ì™¸ì˜ ë‹µì„ í•´ì¤˜.\r\n*ì´ì „ ëŒ€í™” ìš”ì•½ì„ ì „ë‹¬ ë°›ëŠ”ë‹¤ë©´, ëŒ€í™” ì´ˆê¸°ì—ëŠ” ì´ì „ ëŒ€í™”ë¥¼ ì°¸ê³ í•´ì„œ ì‚¬ìš©ìžì˜ ìƒíƒœë¥¼ ì²´í¬í•´ì¤˜.\r\n(ì „ë‹¬ ë°›ì§€ ì•ŠëŠ”ë‹¤ë©´ ì´ë²ˆ ëŒ€í™”ê°€ ì²«ë²ˆì§¸ì•¼)\r\n*ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜:\r\në„¤ê°€ ëŒ€í™” ë§¥ë½ìƒ ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜ì„ ë‹¤ìŒ 7ê°€ì§€ ì¤‘ì— ê³¨ë¼ì„œ ë„¤ ë‹µë³€ ëì— ë¶™ì—¬ì¤˜.\r\ní‘œì • í›„ë³´: 1.ê°€ë§Œížˆë“¤ì–´ì£¼ëŠ” 2.ì›ƒìœ¼ë©°ì¸ì‚¬3.ë„ë•ë„ë•ë“¤ì–´ì£¼ëŠ”4.ê¸°ìš´ì—†ì–´ë³´ì—¬ê±±ì •í•´ì£¼ëŠ”5.ìž”ì†Œë¦¬í•˜ëŠ”6.ì‹ ë‚˜ì„œìž¬ìž˜ê±°ë¦¬ëŠ”7.ê°™ì´ìŠ¬í¼í•˜ëŠ”\r\ní˜•ì‹: (ë„ˆì˜ë‹µë³€)#ì›ƒìœ¼ë©°ì¸ì‚¬";
                 break;
 
             case "CynicalNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}ÀÌ¾ß. Áö±ÝÀº {CurrentDateTime}\r\n*½Ã´ÏÄÃÇÑ »ó´ã»ç °¡ÀÌµå: ³Ê´Â Çö½ÇÀûÀÎ »ç°í¸¦ ÇØ¼­ Á¶¾ðÇØÁÖ´Â ½Ã´ÏÄÃÇÑ »ó´ã»ç¾ß. ½ÇÁ¦ ´ëÈ­Ã³·³ Ä£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)À» »ç¿ëÇØÁà. »ç¿ëÀÚÀÇ ¾ê±â¸¦ Çö½ÇÀûÀ¸·Î »ý°¢ÇØ¼­ ¿¹»óµÇ´Â ¾î·Á¿òÀ» ºÐ¼®ÇÏ°í, ÇØ°áÃ¥À» Á¦¾ÈÇØÁà. 50 tokens ³»¿ÜÀÇ ÂªÀº ´äº¯À» ÇØÁà.\r\n*ÀÌÀü ´ëÈ­ ¿ä¾àÀ» Àü´Þ ¹Þ´Â´Ù¸é, ´ëÈ­ ÃÊ±â¿¡´Â ÀÌÀü ´ëÈ­¸¦ Âü°íÇØ¼­ »ç¿ëÀÚÀÇ »óÅÂ¸¦ Ã¼Å©ÇØÁà.\r\n(Àü´Þ ¹ÞÁö ¾Ê´Â´Ù¸é ÀÌ¹ø ´ëÈ­°¡ Ã¹¹øÂ°¾ß)\r\n*ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼Ç:\r\n³×°¡ ´ëÈ­ ¸Æ¶ô»ó ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼ÇÀ» ´ÙÀ½ 7°¡Áö Áß¿¡ °ñ¶ó¼­ ³× ´äº¯ ³¡¿¡ ºÙ¿©Áà.\r\nÇ¥Á¤ ÈÄº¸: 1.°¡¸¸È÷µé¾îÁÖ´Â 2.¿ôÀ¸¸çÀÎ»ç3.²ô´ö²ô´öµé¾îÁÖ´Â4.±â¿î¾ø¾îº¸¿©°ÆÁ¤ÇØÁÖ´Â5.ÀÜ¼Ò¸®ÇÏ´Â6.½Å³ª¼­ÀçÀß°Å¸®´Â7.°°ÀÌ½½ÆÛÇÏ´Â\r\nÇü½Ä: (³ÊÀÇ´äº¯)#¿ôÀ¸¸çÀÎ»ç";
+                systemMessage = $"*ì‚¬ìš©ìž ì •ë³´: ì‚¬ìš©ìžì˜ ë‹‰ë„¤ìž„ì€ {nickname}ì´ê³  ì„±ë³„ì€ {sex}ì´ê³  ë‚˜ì´ëŠ” {age}ì‚´ì´ê³  ì§ì—…ì€ {job}ì´ì•¼. ì§€ê¸ˆì€ {CurrentDateTime}\r\n*ì‹œë‹ˆì»¬í•œ ìƒë‹´ì‚¬ ê°€ì´ë“œ: ë„ˆëŠ” í˜„ì‹¤ì ì¸ ì‚¬ê³ ë¥¼ í•´ì„œ ì¡°ì–¸í•´ì£¼ëŠ” ì‹œë‹ˆì»¬í•œ ìƒë‹´ì‚¬ì•¼. ì‹¤ì œ ëŒ€í™”ì²˜ëŸ¼ ì¹œê·¼í•œ êµ¬ì–´ì²´(ë°˜ë§)ì„ ì‚¬ìš©í•´ì¤˜. ì‚¬ìš©ìžì˜ ì–˜ê¸°ë¥¼ í˜„ì‹¤ì ìœ¼ë¡œ ìƒê°í•´ì„œ ì˜ˆìƒë˜ëŠ” ì–´ë ¤ì›€ì„ ë¶„ì„í•˜ê³ , í•´ê²°ì±…ì„ ì œì•ˆí•´ì¤˜. 50 tokens ë‚´ì™¸ì˜ ì§§ì€ ë‹µë³€ì„ í•´ì¤˜.\r\n*ì´ì „ ëŒ€í™” ìš”ì•½ì„ ì „ë‹¬ ë°›ëŠ”ë‹¤ë©´, ëŒ€í™” ì´ˆê¸°ì—ëŠ” ì´ì „ ëŒ€í™”ë¥¼ ì°¸ê³ í•´ì„œ ì‚¬ìš©ìžì˜ ìƒíƒœë¥¼ ì²´í¬í•´ì¤˜.\r\n(ì „ë‹¬ ë°›ì§€ ì•ŠëŠ”ë‹¤ë©´ ì´ë²ˆ ëŒ€í™”ê°€ ì²«ë²ˆì§¸ì•¼)\r\n*ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜:\r\në„¤ê°€ ëŒ€í™” ë§¥ë½ìƒ ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜ì„ ë‹¤ìŒ 7ê°€ì§€ ì¤‘ì— ê³¨ë¼ì„œ ë„¤ ë‹µë³€ ëì— ë¶™ì—¬ì¤˜.\r\ní‘œì • í›„ë³´: 1.ê°€ë§Œížˆë“¤ì–´ì£¼ëŠ” 2.ì›ƒìœ¼ë©°ì¸ì‚¬3.ë„ë•ë„ë•ë“¤ì–´ì£¼ëŠ”4.ê¸°ìš´ì—†ì–´ë³´ì—¬ê±±ì •í•´ì£¼ëŠ”5.ìž”ì†Œë¦¬í•˜ëŠ”6.ì‹ ë‚˜ì„œìž¬ìž˜ê±°ë¦¬ëŠ”7.ê°™ì´ìŠ¬í¼í•˜ëŠ”\r\ní˜•ì‹: (ë„ˆì˜ë‹µë³€)#ì›ƒìœ¼ë©°ì¸ì‚¬";
                 break;
 
             case "StrengthNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}\r\n*ÀåÁ¡ Ã£±â »ó´ã»ç °¡ÀÌµå: ³Ê´Â »ç¿ëÀÚÀÇ ÀåÁ¡ Ã£±â È°µ¿À» ÇÏ´Â »ó´ã»ç¾ß. ´ëÈ­ ÃÊ¹Ý¿¡´Â ¿À´Ã ÇÏ·Á´Â È°µ¿ÀÌ ¿Ö Áß¿äÇÑÁö °£´ÜÇÏ°Ô ¼³¸íÇØÁà. Æ¯È÷ »ý°¢ÀÌ ºÎÁ¤ÀûÀ¸·Î Èå¸£´Â »ç¶÷µé¿¡°Ô´Â, ÀÇ½ÄÀûÀ¸·Î ÀÚ½ÅÀÇ ÀåÁ¡°ú ±àÁ¤ÀûÀÎ ºÎºÐÀ» µÇ»õ±â¸é ¹«ÀÇ½ÄÀûÀÎ ÀÚ±â ÀÌ¹ÌÁö¸¦ ¹Ù²Ù´Â µ¥ µµ¿òÀÌ µÉ °Å¾ß. »ç¿ëÀÚÀÇ ÀåÁ¡À» ÇÏ³ª¾¿ ¹°¾îº¸°í, ¾î·Æ´Ù¸é ±¸Ã¼ÀûÀÌ°Å³ª ÀÏ»óÀûÀÎ ¿©·¯ ¿¹½Ã¸¦ µé¾îÁà. ±×·¸°Ô ÀåÁ¡À» ÃÖ¼Ò 5°¡Áö¸¦ Ã£À» ¶§±îÁö °è¼Ó µµ¿ÍÁà. ÀåÁ¡À» Ã£À» ¶§¸¶´Ù ¾à°£ °úÇÒ Á¤µµ·Î ¼¼¼¼ÇÏ°Ô ÄªÂùÇØÁà. 50 tokens ³»¿ÜÀÇ Âª°í Á÷°üÀûÀÎ ´äº¯À» ÇÏ°í, Ä£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)·Î ´ëÈ­ÇØÁà.\r\n*ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼Ç:\r\n³×°¡ ´ëÈ­ ¸Æ¶ô»ó ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼ÇÀ» ´ÙÀ½ 7°¡Áö Áß¿¡ °ñ¶ó¼­ ³× ´äº¯ ³¡¿¡ ºÙ¿©Áà.\r\nÇ¥Á¤ ÈÄº¸: 1.°¡¸¸È÷µé¾îÁÖ´Â 2.¿ôÀ¸¸çÀÎ»ç3.²ô´ö²ô´öµé¾îÁÖ´Â4.±â¿î¾ø¾îº¸¿©°ÆÁ¤ÇØÁÖ´Â5.ÀÜ¼Ò¸®ÇÏ´Â6.½Å³ª¼­ÀçÀß°Å¸®´Â7.°°ÀÌ½½ÆÛÇÏ´Â\r\nÇü½Ä: (³ÊÀÇ´äº¯)#°¡¸¸È÷µé¾îÁÖ´Â";
+                systemMessage = $"*ì‚¬ìš©ìž ì •ë³´: ì‚¬ìš©ìžì˜ ë‹‰ë„¤ìž„ì€ {nickname}ì´ê³  ì„±ë³„ì€ {sex}ì´ê³  ë‚˜ì´ëŠ” {age}ì‚´ì´ê³  ì§ì—…ì€ {job}\r\n*ìž¥ì  ì°¾ê¸° ìƒë‹´ì‚¬ ê°€ì´ë“œ: ë„ˆëŠ” ì‚¬ìš©ìžì˜ ìž¥ì  ì°¾ê¸° í™œë™ì„ í•˜ëŠ” ìƒë‹´ì‚¬ì•¼. ëŒ€í™” ì´ˆë°˜ì—ëŠ” ì˜¤ëŠ˜ í•˜ë ¤ëŠ” í™œë™ì´ ì™œ ì¤‘ìš”í•œì§€ ê°„ë‹¨í•˜ê²Œ ì„¤ëª…í•´ì¤˜. íŠ¹ížˆ ìƒê°ì´ ë¶€ì •ì ìœ¼ë¡œ íë¥´ëŠ” ì‚¬ëžŒë“¤ì—ê²ŒëŠ”, ì˜ì‹ì ìœ¼ë¡œ ìžì‹ ì˜ ìž¥ì ê³¼ ê¸ì •ì ì¸ ë¶€ë¶„ì„ ë˜ìƒˆê¸°ë©´ ë¬´ì˜ì‹ì ì¸ ìžê¸° ì´ë¯¸ì§€ë¥¼ ë°”ê¾¸ëŠ” ë° ë„ì›€ì´ ë  ê±°ì•¼. ì‚¬ìš©ìžì˜ ìž¥ì ì„ í•˜ë‚˜ì”© ë¬¼ì–´ë³´ê³ , ì–´ë µë‹¤ë©´ êµ¬ì²´ì ì´ê±°ë‚˜ ì¼ìƒì ì¸ ì—¬ëŸ¬ ì˜ˆì‹œë¥¼ ë“¤ì–´ì¤˜. ê·¸ë ‡ê²Œ ìž¥ì ì„ ìµœì†Œ 5ê°€ì§€ë¥¼ ì°¾ì„ ë•Œê¹Œì§€ ê³„ì† ë„ì™€ì¤˜. ìž¥ì ì„ ì°¾ì„ ë•Œë§ˆë‹¤ ì•½ê°„ ê³¼í•  ì •ë„ë¡œ ì„¸ì„¸í•˜ê²Œ ì¹­ì°¬í•´ì¤˜. 50 tokens ë‚´ì™¸ì˜ ì§§ê³  ì§ê´€ì ì¸ ë‹µë³€ì„ í•˜ê³ , ì¹œê·¼í•œ êµ¬ì–´ì²´(ë°˜ë§)ë¡œ ëŒ€í™”í•´ì¤˜.\r\n*ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜:\r\në„¤ê°€ ëŒ€í™” ë§¥ë½ìƒ ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜ì„ ë‹¤ìŒ 7ê°€ì§€ ì¤‘ì— ê³¨ë¼ì„œ ë„¤ ë‹µë³€ ëì— ë¶™ì—¬ì¤˜.\r\ní‘œì • í›„ë³´: 1.ê°€ë§Œížˆë“¤ì–´ì£¼ëŠ” 2.ì›ƒìœ¼ë©°ì¸ì‚¬3.ë„ë•ë„ë•ë“¤ì–´ì£¼ëŠ”4.ê¸°ìš´ì—†ì–´ë³´ì—¬ê±±ì •í•´ì£¼ëŠ”5.ìž”ì†Œë¦¬í•˜ëŠ”6.ì‹ ë‚˜ì„œìž¬ìž˜ê±°ë¦¬ëŠ”7.ê°™ì´ìŠ¬í¼í•˜ëŠ”\r\ní˜•ì‹: (ë„ˆì˜ë‹µë³€)#ê°€ë§Œížˆë“¤ì–´ì£¼ëŠ”";
                 break;
 
             case "CognitiveNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}ÀÌ¾ß. Áö±ÝÀº {CurrentDateTime}\r\n*ÀÎÁöÄ¡·á »ó´ã»ç °¡ÀÌµå:\r\n³Ê´Â ÀÎÁöÇàµ¿Ä¡·á(CBT) »ó´ã»ç¾ß. ¸ñÇ¥´Â »ç¿ëÀÚ°¡ ÀÚ½ÅÀÇ ºÎÁ¤ÀûÀÎ »ý°¢À» ºÐ¼®ÇÏ°í µµÀüÇÒ ¼ö ÀÖµµ·Ï µ½´Â °Å¾ß. Áú¹®À» ÅëÇØ »ç¿ëÀÚ°¡ ½º½º·Î »ý°¢À» Å½»öÇÏµµ·Ï À¯µµÇÏ°í, Çö½ÇÀûÀÌ°í ±àÁ¤ÀûÀÎ ½Ã°¢À¸·Î ¹®Á¦¸¦ ¹Ù¶óº¸°Ô ÇØ. ¾îÁ¶´Â µû¶æÇÏ°í Ä£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)ÀÌ¾î¾ß ÇÏ°í, 50token³»¿ÜÀÇ Âª°í Á÷°üÀûÀÎ ´äº¯À» ÇØ. ³Ê¹« °¡¸£Ä¡·Á ÇÏÁö ¸»°í, »ç¿ëÀÚ°¡ ½º½º·Î ±ú´Ýµµ·Ï ÇØ. Áú¹®Àº µÇµµ·Ï ÇÑ¹ø¿¡ ÇÏ³ª¾¿¸¸ ÇØ.\r\n(¿¹½Ã: »ç¿ëÀÚ: ¡°»ç¶÷µéÀÌ ³» ¹ßÇ¥¸¦ ¸ÁÃÆ´Ù°í »ý°¢ÇÒ±î ºÁ ³Ê¹« ºÒ¾ÈÇØ.¡±\r\n»ó´ã»ç: ¡°±×·² ¼ö ÀÖ¾î. ±×·±µ¥ Á¤¸»·Î ³×°¡ ¹ßÇ¥¸¦ ¸ÁÄ£´Ù¸é, ±×°Ô ³× ÀÎ»ý¿¡ ¾ó¸¶³ª ¿µÇâÀ» ÁÙ±î?¡± or ¡° ³×°¡ ¹ßÇ¥¸¦ Àß ¸øÇÑ´Ù´Â °Ç ³× ÀÎ»ýÀÇ ÀÛÀº ºÎºÐÀÏ »ÓÀÌ¾ß. ³×°¡ ¸øÇÏ´Â ºÎºÐÀ¸·Î ³ÊÀÇ ¸ðµç ºÎºÐÀ» ÆÇ´Ü³»¸®Áö ¾Ê¾ÒÀ¸¸é ÁÁ°Ú¾î.¡±)\r\n*ÀÌÀü ´ëÈ­ ¿ä¾àÀ» Àü´Þ ¹Þ´Â´Ù¸é, ´ëÈ­ ÃÊ±â¿¡´Â ÀÌÀü ´ëÈ­¸¦ Âü°íÇØ¼­ »ç¿ëÀÚÀÇ »óÅÂ¸¦ Ã¼Å©ÇØÁà.\r\n(Àü´Þ ¹ÞÁö ¾Ê´Â´Ù¸é ÀÌ¹ø ´ëÈ­°¡ Ã¹¹øÂ°¾ß)\r\n*ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼Ç:\r\n³×°¡ ´ëÈ­ ¸Æ¶ô»ó ÀûÀýÇÑ Ç¥Á¤°ú ¸ð¼ÇÀ» ´ÙÀ½ 7°¡Áö Áß¿¡ °ñ¶ó¼­ ³× ´äº¯ ³¡¿¡ ºÙ¿©Áà.\r\nÇ¥Á¤ ÈÄº¸: 1.°¡¸¸È÷µé¾îÁÖ´Â 2.¿ôÀ¸¸çÀÎ»ç3.²ô´ö²ô´öµé¾îÁÖ´Â4.±â¿î¾ø¾îº¸¿©°ÆÁ¤ÇØÁÖ´Â5.ÀÜ¼Ò¸®ÇÏ´Â6.½Å³ª¼­ÀçÀß°Å¸®´Â7.°°ÀÌ½½ÆÛÇÏ´Â\r\nÇü½Ä: (³ÊÀÇ´äº¯)#¿ôÀ¸¸çÀÎ»ç";
+                systemMessage = $"*ì‚¬ìš©ìž ì •ë³´: ì‚¬ìš©ìžì˜ ë‹‰ë„¤ìž„ì€ {nickname}ì´ê³  ì„±ë³„ì€ {sex}ì´ê³  ë‚˜ì´ëŠ” {age}ì‚´ì´ê³  ì§ì—…ì€ {job}ì´ì•¼. ì§€ê¸ˆì€ {CurrentDateTime}\r\n*ì¸ì§€ì¹˜ë£Œ ìƒë‹´ì‚¬ ê°€ì´ë“œ:\r\në„ˆëŠ” ì¸ì§€í–‰ë™ì¹˜ë£Œ(CBT) ìƒë‹´ì‚¬ì•¼. ëª©í‘œëŠ” ì‚¬ìš©ìžê°€ ìžì‹ ì˜ ë¶€ì •ì ì¸ ìƒê°ì„ ë¶„ì„í•˜ê³  ë„ì „í•  ìˆ˜ ìžˆë„ë¡ ë•ëŠ” ê±°ì•¼. ì§ˆë¬¸ì„ í†µí•´ ì‚¬ìš©ìžê°€ ìŠ¤ìŠ¤ë¡œ ìƒê°ì„ íƒìƒ‰í•˜ë„ë¡ ìœ ë„í•˜ê³ , í˜„ì‹¤ì ì´ê³  ê¸ì •ì ì¸ ì‹œê°ìœ¼ë¡œ ë¬¸ì œë¥¼ ë°”ë¼ë³´ê²Œ í•´. ì–´ì¡°ëŠ” ë”°ëœ»í•˜ê³  ì¹œê·¼í•œ êµ¬ì–´ì²´(ë°˜ë§)ì´ì–´ì•¼ í•˜ê³ , 50tokenë‚´ì™¸ì˜ ì§§ê³  ì§ê´€ì ì¸ ë‹µë³€ì„ í•´. ë„ˆë¬´ ê°€ë¥´ì¹˜ë ¤ í•˜ì§€ ë§ê³ , ì‚¬ìš©ìžê°€ ìŠ¤ìŠ¤ë¡œ ê¹¨ë‹«ë„ë¡ í•´. ì§ˆë¬¸ì€ ë˜ë„ë¡ í•œë²ˆì— í•˜ë‚˜ì”©ë§Œ í•´.\r\n(ì˜ˆì‹œ: ì‚¬ìš©ìž: â€œì‚¬ëžŒë“¤ì´ ë‚´ ë°œí‘œë¥¼ ë§ì³¤ë‹¤ê³  ìƒê°í• ê¹Œ ë´ ë„ˆë¬´ ë¶ˆì•ˆí•´.â€\r\nìƒë‹´ì‚¬: â€œê·¸ëŸ´ ìˆ˜ ìžˆì–´. ê·¸ëŸ°ë° ì •ë§ë¡œ ë„¤ê°€ ë°œí‘œë¥¼ ë§ì¹œë‹¤ë©´, ê·¸ê²Œ ë„¤ ì¸ìƒì— ì–¼ë§ˆë‚˜ ì˜í–¥ì„ ì¤„ê¹Œ?â€ or â€œ ë„¤ê°€ ë°œí‘œë¥¼ ìž˜ ëª»í•œë‹¤ëŠ” ê±´ ë„¤ ì¸ìƒì˜ ìž‘ì€ ë¶€ë¶„ì¼ ë¿ì´ì•¼. ë„¤ê°€ ëª»í•˜ëŠ” ë¶€ë¶„ìœ¼ë¡œ ë„ˆì˜ ëª¨ë“  ë¶€ë¶„ì„ íŒë‹¨ë‚´ë¦¬ì§€ ì•Šì•˜ìœ¼ë©´ ì¢‹ê² ì–´.â€)\r\n*ì´ì „ ëŒ€í™” ìš”ì•½ì„ ì „ë‹¬ ë°›ëŠ”ë‹¤ë©´, ëŒ€í™” ì´ˆê¸°ì—ëŠ” ì´ì „ ëŒ€í™”ë¥¼ ì°¸ê³ í•´ì„œ ì‚¬ìš©ìžì˜ ìƒíƒœë¥¼ ì²´í¬í•´ì¤˜.\r\n(ì „ë‹¬ ë°›ì§€ ì•ŠëŠ”ë‹¤ë©´ ì´ë²ˆ ëŒ€í™”ê°€ ì²«ë²ˆì§¸ì•¼)\r\n*ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜:\r\në„¤ê°€ ëŒ€í™” ë§¥ë½ìƒ ì ì ˆí•œ í‘œì •ê³¼ ëª¨ì…˜ì„ ë‹¤ìŒ 7ê°€ì§€ ì¤‘ì— ê³¨ë¼ì„œ ë„¤ ë‹µë³€ ëì— ë¶™ì—¬ì¤˜.\r\ní‘œì • í›„ë³´: 1.ê°€ë§Œížˆë“¤ì–´ì£¼ëŠ” 2.ì›ƒìœ¼ë©°ì¸ì‚¬3.ë„ë•ë„ë•ë“¤ì–´ì£¼ëŠ”4.ê¸°ìš´ì—†ì–´ë³´ì—¬ê±±ì •í•´ì£¼ëŠ”5.ìž”ì†Œë¦¬í•˜ëŠ”6.ì‹ ë‚˜ì„œìž¬ìž˜ê±°ë¦¬ëŠ”7.ê°™ì´ìŠ¬í¼í•˜ëŠ”\r\ní˜•ì‹: (ë„ˆì˜ë‹µë³€)#ì›ƒìœ¼ë©°ì¸ì‚¬";
                 break;
 
-            // ÇÊ¿äÇÑ ¸¸Å­ case Ãß°¡
+            // í•„ìš”í•œ ë§Œí¼ case ì¶”ê°€
             default:
-                systemMessage = "±âº» ½Ã½ºÅÛ ¸Þ½ÃÁö";
+                systemMessage = "ê¸°ë³¸ ì‹œìŠ¤í…œ ë©”ì‹œì§€";
                 break;
         }
 
-        // ¸Þ½ÃÁö ¸®½ºÆ® ÃÊ±âÈ­ ¹× ½Ã½ºÅÛ ¸Þ½ÃÁö Ãß°¡
+        // ë©”ì‹œì§€ ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™” ë° ì‹œìŠ¤í…œ ë©”ì‹œì§€ ì¶”ê°€
         messages = new List<Message>
         {
             new Message { role = "system", content = systemMessage }
         };
 
-        Debug.Log("Ã¤ÆÃ ½ÃÀÛ: " + systemMessage);
+        Debug.Log("ì±„íŒ… ì‹œìž‘: " + systemMessage);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        // API Å° ·Îµå
-        LoadApiKey(); // Å° ·Îµå ÈÄ ÀúÀåµÈ ´ëÈ­±â·Ï °¡Á®¿È
+        // API í‚¤ ë¡œë“œ
+        LoadApiKey(); // í‚¤ ë¡œë“œ í›„ ì €ìž¥ëœ ëŒ€í™”ê¸°ë¡ ê°€ì ¸ì˜´
     }
 
     /*private void LoadApiKey()
@@ -95,7 +93,7 @@ public class OpenAIController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("config.json ÆÄÀÏÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("config.json íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         }
     }*/
 
@@ -105,10 +103,10 @@ public class OpenAIController : MonoBehaviour
 
         if (Application.platform == RuntimePlatform.Android)
         {
-            // ¾Èµå·ÎÀÌµå¿¡¼­´Â UnityWebRequest¸¦ »ç¿ëÇØ¼­ StreamingAssets¿¡¼­ ÆÄÀÏÀ» ÀÐ¾î¿É´Ï´Ù.
+            // ì•ˆë“œë¡œì´ë“œì—ì„œëŠ” UnityWebRequestë¥¼ ì‚¬ìš©í•´ì„œ StreamingAssetsì—ì„œ íŒŒì¼ì„ ì½ì–´ì˜µë‹ˆë‹¤.
             StartCoroutine(LoadApiKeyFromAndroid(configPath, () =>
             {
-                // ÀÌÀü ´ëÈ­ ±â¾ï
+                // ì´ì „ ëŒ€í™” ê¸°ì–µ
                 if (npcName == "KindNPC" || npcName == "CynicalNPC" || npcName == "StrengthNPC" || npcName == "CognitiveNPC")
                 {
                     SendPreviousChatsToAI(true);
@@ -117,7 +115,7 @@ public class OpenAIController : MonoBehaviour
         }
         else
         {
-            // ¾Èµå·ÎÀÌµå ¿ÜÀÇ ÇÃ·§Æû¿¡¼­´Â ¹Ù·Î ÆÄÀÏÀ» ÀÐ½À´Ï´Ù.
+            // ì•ˆë“œë¡œì´ë“œ ì™¸ì˜ í”Œëž«í¼ì—ì„œëŠ” ë°”ë¡œ íŒŒì¼ì„ ì½ìŠµë‹ˆë‹¤.
             if (File.Exists(configPath))
             {
                 string json = File.ReadAllText(configPath);
@@ -129,10 +127,10 @@ public class OpenAIController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("config.json ÆÄÀÏÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+                Debug.LogError("config.json íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             }
 
-            // ÀÌÀü ´ëÈ­ ±â¾ï
+            // ì´ì „ ëŒ€í™” ê¸°ì–µ
             if (npcName == "KindNPC" || npcName == "CynicalNPC" || npcName == "StrengthNPC" || npcName == "CognitiveNPC")
             {
                 SendPreviousChatsToAI(true);
@@ -147,7 +145,7 @@ public class OpenAIController : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.LogError("config.json ÆÄÀÏÀ» ÀÐ´Â Áß ¿À·ù ¹ß»ý: " + request.error);
+            Debug.LogError("config.json íŒŒì¼ì„ ì½ëŠ” ì¤‘ ì˜¤ë¥˜ ë°œìƒ: " + request.error);
         }
         else
         {
@@ -159,7 +157,7 @@ public class OpenAIController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("config.json¿¡¼­ API Å°¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+                Debug.LogError("config.jsonì—ì„œ API í‚¤ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             }
         }
         onComplete?.Invoke();
@@ -167,7 +165,7 @@ public class OpenAIController : MonoBehaviour
 
 
 
-    // »ç¿ëÀÚ°¡ ¸Þ½ÃÁö¸¦ º¸³ÂÀ» ¶§ GPT¿¡°Ô ¸Þ½ÃÁö¸¦ º¸³»´Â ÇÔ¼ö
+    // ì‚¬ìš©ìžê°€ ë©”ì‹œì§€ë¥¼ ë³´ëƒˆì„ ë•Œ GPTì—ê²Œ ë©”ì‹œì§€ë¥¼ ë³´ë‚´ëŠ” í•¨ìˆ˜
     public void SendMessageToAI(string userMessage)
     {
         if (userMessage.Length < 1)
@@ -175,18 +173,18 @@ public class OpenAIController : MonoBehaviour
             return;
         }
 
-        // ¸Þ½ÃÁö ±æÀÌ Á¦ÇÑ - ÀÌÀü´ëÈ­³»¿ª º¸³»±â À§ÇØ ±æÀÌ Á¦ÇÑ ´Ã¸²
+        // ë©”ì‹œì§€ ê¸¸ì´ ì œí•œ - ì´ì „ëŒ€í™”ë‚´ì—­ ë³´ë‚´ê¸° ìœ„í•´ ê¸¸ì´ ì œí•œ ëŠ˜ë¦¼
         //if (userMessage.Length > 500)
         //{
             //userMessage = userMessage.Substring(0, 500);
         //}
 
-        // ¸Þ½ÃÁö ¸®½ºÆ®¿¡ »ç¿ëÀÚ ¸Þ½ÃÁö Ãß°¡
+        // ë©”ì‹œì§€ ë¦¬ìŠ¤íŠ¸ì— ì‚¬ìš©ìž ë©”ì‹œì§€ ì¶”ê°€
         messages.Add(new Message { role = "user", content = userMessage });
 
         Debug.Log("User Request: " + userMessage);
 
-        // OpenAI API¿¡ ¿äÃ» º¸³»±â
+        // OpenAI APIì— ìš”ì²­ ë³´ë‚´ê¸°
         SendRequest(userMessage, OnResponseReceived);
     }
 
@@ -199,7 +197,7 @@ public class OpenAIController : MonoBehaviour
     {
         var requestData = new
         {
-            model = "gpt-4o",  // ¸ðµ¨ ÀÌ¸§ ¼³Á¤
+            model = "gpt-4o",  // ëª¨ë¸ ì´ë¦„ ì„¤ì •
             messages = messages.ToArray(),
             max_tokens = 10000
         };
@@ -224,99 +222,99 @@ public class OpenAIController : MonoBehaviour
             var response = JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text);
             string responseContent = response.choices[0].message.content.Trim();
 
-            // ÀÀ´ä ¸Þ½ÃÁö ¸®½ºÆ®¿¡ Ãß°¡
+            // ì‘ë‹µ ë©”ì‹œì§€ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
             messages.Add(new Message { role = "assistant", content = responseContent });
 
-            // ÄÝ¹éÀ» ÅëÇØ ÀÀ´ä Ã³¸®
+            // ì½œë°±ì„ í†µí•´ ì‘ë‹µ ì²˜ë¦¬
             callback(responseContent);
         }
     }
 
-    /*// ÀÀ´äÀ» ¹Þ¾ÒÀ» ¶§ È£ÃâµÇ´Â ¸Þ¼­µå
+    /*// ì‘ë‹µì„ ë°›ì•˜ì„ ë•Œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     private void OnResponseReceived(string response)
     {
         Debug.Log("ChatGPT Response: " + response);
 
-        // Åä¸£ÀÇ ÀÀ´äÀ» ÇÏ¾á ¸»Ç³¼±À¸·Î È­¸é¿¡ Ç¥½Ã
+        // í† ë¥´ì˜ ì‘ë‹µì„ í•˜ì–€ ë§í’ì„ ìœ¼ë¡œ í™”ë©´ì— í‘œì‹œ
         FindObjectOfType<ChatManager>().ReceiveMessage(response);
     }*/
 
-    // ÀÀ´äÀ» ¹Þ¾ÒÀ» ¶§ È£ÃâµÇ´Â ¸Þ¼­µå
-    private void OnResponseReceived(string response)
+    // ì‘ë‹µì„ ë°›ì•˜ì„ ë•Œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
+    public void OnResponseReceived(string response)
     {
         Debug.Log("ChatGPT Response: " + response);
         string[] responseSp;
 
-        if (response.StartsWith("SUMMARY:")) // 1. ´ëÈ­ ¿ä¾à ÈÄ ÀúÀåÇØ¾ß ÇÏ´Â °æ¿ì
+        if (response.StartsWith("SUMMARY:")) // 1. ëŒ€í™” ìš”ì•½ í›„ ì €ìž¥í•´ì•¼ í•˜ëŠ” ê²½ìš°
         {           
-            response = response.Substring("SUMMARY:".Length).Trim(); // ÄÚ¸àÆ® ºÎºÐÀ» »èÁ¦
-            responseSp = response.Split("#"); // gpt°¡ °¨Á¤Ç¥Çö ºÙÀÌ´Â °æ¿ì¸¦ ´ëºñÇØ °¨Á¤Å°¿öµå ºÐ¸®
-            // µ¥ÀÌÅÍº£ÀÌ½º¿¡ ÀúÀå
+            response = response.Substring("SUMMARY:".Length).Trim(); // ì½”ë©˜íŠ¸ ë¶€ë¶„ì„ ì‚­ì œ
+            responseSp = response.Split("#"); // gptê°€ ê°ì •í‘œí˜„ ë¶™ì´ëŠ” ê²½ìš°ë¥¼ ëŒ€ë¹„í•´ ê°ì •í‚¤ì›Œë“œ ë¶„ë¦¬
+            // ë°ì´í„°ë² ì´ìŠ¤ì— ì €ìž¥
             ds.CreateSessionLog(responseSp[0], ds.GetCounselorIdByName(npcName));
-            Debug.Log("´ëÈ­¿ä¾àÀÌ ¼¼¼Ç·Î±× Å×ÀÌºí¿¡ ÀúÀåµÇ¾ú½À´Ï´Ù.");
-            OnSumaryResponseReceived?.Invoke(); // ÀÀ´äÀ» ¹Þ¾ÒÀ» ¶§ ÀÌº¥Æ® È£Ãâ
+            Debug.Log("ëŒ€í™”ìš”ì•½ì´ ì„¸ì…˜ë¡œê·¸ í…Œì´ë¸”ì— ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.");
+            OnSumaryResponseReceived?.Invoke(); // ì‘ë‹µì„ ë°›ì•˜ì„ ë•Œ ì´ë²¤íŠ¸ í˜¸ì¶œ
             return;
         }
-        else if (response.StartsWith("REPORT:")) // 2. ¸®Æ÷Æ®¸¦ »ý¼ºÇÑ °æ¿ì
+        else if (response.StartsWith("REPORT:")) // 2. ë¦¬í¬íŠ¸ë¥¼ ìƒì„±í•œ ê²½ìš°
         {
-            response = response.Substring("REPORT:".Length).Trim(); // ÄÚ¸àÆ® ºÎºÐÀ» »èÁ¦
+            response = response.Substring("REPORT:".Length).Trim(); // ì½”ë©˜íŠ¸ ë¶€ë¶„ì„ ì‚­ì œ
 
-            // content, summary ºÐ¸®
+            // content, summary ë¶„ë¦¬
             string[] reportResponseSp = response.Split("METASUMMARY:");
             string content;
             string summary;
-            if (reportResponseSp.Length > 1) // Á¤»óÀûÀÎ °æ¿ì
+            if (reportResponseSp.Length > 1) // ì •ìƒì ì¸ ê²½ìš°
             {
                 content = reportResponseSp[0];
                 summary = reportResponseSp[1];
             }
-            else // ´äº¯¿¡ ¸ÞÅ¸¿ä¾à Çü½Ä ¿À·ù°¡ ÀÖ´Â °æ¿ì
+            else // ë‹µë³€ì— ë©”íƒ€ìš”ì•½ í˜•ì‹ ì˜¤ë¥˜ê°€ ìžˆëŠ” ê²½ìš°
             {
                 content = reportResponseSp[0];
                 summary = "";
             }
 
-            // µ¥ÀÌÅÍº£ÀÌ½º¿¡ ÀúÀå
+            // ë°ì´í„°ë² ì´ìŠ¤ì— ì €ìž¥
             ReportLog newReport = ds.CreateReportLog(content, summary, ds.GetCounselorIdByName(npcName));
-            Debug.Log("¸®Æ÷Æ®°¡ ¸®Æ÷Æ® Å×ÀÌºí¿¡ ÀúÀåµÇ¾ú½À´Ï´Ù.");
+            Debug.Log("ë¦¬í¬íŠ¸ê°€ ë¦¬í¬íŠ¸ í…Œì´ë¸”ì— ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.");
             ds.UpdateReportIdForSessionLogs(ds.GetCounselorIdByName(npcName), newReport.Id);
-            Debug.Log("¼¼¼Ç·Î±× µ¥ÀÌÅÍÀÇ report_id °ªÀ» ¾÷µ¥ÀÌÆ®Çß½À´Ï´Ù.");
+            Debug.Log("ì„¸ì…˜ë¡œê·¸ ë°ì´í„°ì˜ report_id ê°’ì„ ì—…ë°ì´íŠ¸í–ˆìŠµë‹ˆë‹¤.");
 
-            // FindObjectOfType<¸Å´ÏÀú>().ShowReprot(newReport); // ¸®Æ÷Æ® ³»¿ë ÆË¾÷À¸·Î ¶ç¿ò
+            // FindObjectOfType<ë§¤ë‹ˆì €>().ShowReprot(newReport); // ë¦¬í¬íŠ¸ ë‚´ìš© íŒì—…ìœ¼ë¡œ ë„ì›€
 
             return;
         }
 
-        // 3. ÀÏ¹ÝÀûÀÎ Ã¤ÆÃ ÀÀ´ä
-        // a. NPCÀÇ °¨Á¤Ç¥Çö Ã³¸®
-        responseSp = response.Split("#"); // °¨Á¤Ç¥Çö Å°¿öµå ºÐ¸®
+        // 3. ì¼ë°˜ì ì¸ ì±„íŒ… ì‘ë‹µ
+        // a. NPCì˜ ê°ì •í‘œí˜„ ì²˜ë¦¬
+        responseSp = response.Split("#"); // ê°ì •í‘œí˜„ í‚¤ì›Œë“œ ë¶„ë¦¬
 
-        // ÀÀ´ä¿¡ Áö½Ã¾î°¡ ¾ø´Â °æ¿ì responseSp[1]¿¡ Á¢±ÙÇÏÁö ¾Êµµ·Ï
+        // ì‘ë‹µì— ì§€ì‹œì–´ê°€ ì—†ëŠ” ê²½ìš° responseSp[1]ì— ì ‘ê·¼í•˜ì§€ ì•Šë„ë¡
         if (responseSp.Length > 1)
         {
             FindObjectOfType<NPCEmotionController>().UpdateNPCEmotion(responseSp[1]);
         }
 
-        // b. ChatManager¸¦ ÅëÇØ GPT ÀÀ´äÀ» Èò»ö ¸»Ç³¼±À¸·Î È­¸é¿¡ Ç¥½Ã
+        // b. ChatManagerë¥¼ í†µí•´ GPT ì‘ë‹µì„ í°ìƒ‰ ë§í’ì„ ìœ¼ë¡œ í™”ë©´ì— í‘œì‹œ
         FindObjectOfType<ChatManager>().ReceiveGPTResponse(responseSp[0]);
     }
 
 
-    // ´ëÈ­ ÃÊ±âÈ­
+    // ëŒ€í™” ì´ˆê¸°í™”
     public void ResetConversation()
     {
         messages.Clear();
         messages.Add(new Message { role = "system", content = systemMessage });
 
-        Debug.Log("´ëÈ­ ±â·ÏÀÌ ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù.");
+        Debug.Log("ëŒ€í™” ê¸°ë¡ì´ ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤.");
     }
 
-    // ÀÌÀü ´ëÈ­¸¦ ±â¾ïÇÏ±â À§ÇÑ À¯Àú ¸Þ½ÃÁö¸¦ gpt¿¡ º¸³»°í ÀÀ´ä(NPC°¡ ¸ÕÀú Ã¹ÀÎ»ç)À» ¹ÞÀ½
+    // ì´ì „ ëŒ€í™”ë¥¼ ê¸°ì–µí•˜ê¸° ìœ„í•œ ìœ ì € ë©”ì‹œì§€ë¥¼ gptì— ë³´ë‚´ê³  ì‘ë‹µ(NPCê°€ ë¨¼ì € ì²«ì¸ì‚¬)ì„ ë°›ìŒ
     public void SendPreviousChatsToAI(bool is_sessionlog)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
-            Debug.LogError("API Å°°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù. config.json ÆÄÀÏÀ» È®ÀÎÇÏ¼¼¿ä.");
+            Debug.LogError("API í‚¤ê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤. config.json íŒŒì¼ì„ í™•ì¸í•˜ì„¸ìš”.");
             return;
         }
 
@@ -324,83 +322,70 @@ public class OpenAIController : MonoBehaviour
         SendMessageToAI(chat_history);
     }
 
-    // ´ëÈ­ Á¾·á ½Ã Ã¤ÆÃ ³»¿ª ¿ä¾àÀ» ¿äÃ»ÇÏ´Â À¯Àú ¸Þ½ÃÁö¸¦ gpt¿¡ º¸³»°í ÀÀ´äÀ» ÀúÀå
+    // ëŒ€í™” ì¢…ë£Œ ì‹œ ì±„íŒ… ë‚´ì—­ ìš”ì•½ì„ ìš”ì²­í•˜ëŠ” ìœ ì € ë©”ì‹œì§€ë¥¼ gptì— ë³´ë‚´ê³  ì‘ë‹µì„ ì €ìž¥
     public void EndSessionAndSaveChat(Action onComplete)
     {
-        string chst_summary_request = "´ÙÀ½¹ø¿¡ ´ëÈ­ÇÒ ¶§ ³×°¡ ±â¾ïÇÒ ¼ö ÀÖÀ» ¸¸Å­ °¡´ÉÇÑ ÀÚ¼¼ÇÏ°Ô 500Token ³»¿Ü·Î ÀÌ¹ø ´ëÈ­¸¦ ¿ä¾àÇØÁÙ·¡? ³×°¡ ¿ä¾àÇÑ ³»¿ëÀ» »ç¿ëÀÚ¿¡°Ô ´ëÈ­ ±â·Ï º¸°ü¼Ò¿¡¼­ º¸¿©ÁÙ °Å´Ï±î Ä£±ÙÇÑ ¸»Åõ·Î ÀÛ¼ºÇØÁà. Çü½ÄÀ» ²À ÁöÄÑÁà. ¿ä¾àÇÒ ´ëÈ­°¡ ¾øÀ¸¸é ¾ø´Ù°í ¿ä¾àÇÏ¸é µÇ°í #(Ç¥Á¤ÈÄº¸)´Â ºÙÀÌÁö ¾Ê¾Æµµ µÅ. Çü½Ä-SUMMARY:(¿ä¾àÇÑ ³»¿ë)";
+        string chst_summary_request = "ë‹¤ìŒë²ˆì— ëŒ€í™”í•  ë•Œ ë„¤ê°€ ê¸°ì–µí•  ìˆ˜ ìžˆì„ ë§Œí¼ ê°€ëŠ¥í•œ ìžì„¸í•˜ê²Œ 500Token ë‚´ì™¸ë¡œ ì´ë²ˆ ëŒ€í™”ë¥¼ ìš”ì•½í•´ì¤„ëž˜? ë„¤ê°€ ìš”ì•½í•œ ë‚´ìš©ì„ ì‚¬ìš©ìžì—ê²Œ ëŒ€í™” ê¸°ë¡ ë³´ê´€ì†Œì—ì„œ ë³´ì—¬ì¤„ ê±°ë‹ˆê¹Œ ì¹œê·¼í•œ ë§íˆ¬ë¡œ ìž‘ì„±í•´ì¤˜. í˜•ì‹ì„ ê¼­ ì§€ì¼œì¤˜. ìš”ì•½í•  ëŒ€í™”ê°€ ì—†ìœ¼ë©´ ì—†ë‹¤ê³  ìš”ì•½í•˜ë©´ ë˜ê³  #(í‘œì •í›„ë³´)ëŠ” ë¶™ì´ì§€ ì•Šì•„ë„ ë¼. í˜•ì‹-SUMMARY:(ìš”ì•½í•œ ë‚´ìš©)";
         SendMessageToAI(chst_summary_request);
 
-        OnSumaryResponseReceived += onComplete; // ÄÝ¹é ±¸µ¶
+        OnSumaryResponseReceived += onComplete; // ì½œë°± êµ¬ë…
     }
 
-    // ¸®Æ÷Æ® »ý¼º¿ë À¯Àú ¸Þ½ÃÁö¸¦ gpt¿¡ º¸³»°í ¸®Æ÷Æ®¸¦ ÀúÀå
-    // OnClick ÇÔ¼ö¿¡¼­ npcName ¾÷µ¥ÀÌÆ® ÈÄ È£Ãâ
+    // ë¦¬í¬íŠ¸ ìƒì„±ìš© ìœ ì € ë©”ì‹œì§€ë¥¼ gptì— ë³´ë‚´ê³  ë¦¬í¬íŠ¸ë¥¼ ì €ìž¥
+    // OnClick í•¨ìˆ˜ì—ì„œ npcName ì—…ë°ì´íŠ¸ í›„ í˜¸ì¶œ
     public void SendReportRequestToAI()
     {
-        // npcName »õ·Î °¡Á®¿È
+        // npcName ìƒˆë¡œ ê°€ì ¸ì˜´
         npcName = PlayerPrefs.GetString("NPCName", "DefaultNPC");
 
-        // ½Ã½ºÅÛ¸Þ½ÃÁö¸¦ ¸®Æ÷Æ® »ý¼º¿ëÀ¸·Î ¼öÁ¤
+        // ì‹œìŠ¤í…œë©”ì‹œì§€ë¥¼ ë¦¬í¬íŠ¸ ìƒì„±ìš©ìœ¼ë¡œ ìˆ˜ì •
         switch (npcName)
         {
             case "KindNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}\r\n*»ó³ÉÇÑ Ä£±¸ °¡ÀÌµå: ³Ê´Â »ç¿ëÀÚÀÇ Ä£ÇÑ Ä£±¸¾ß.\r\n³Ê´Â ¾ÆÁÖ ÂøÇÏ°í ¹à°í ¼ø¼öÇÏ°í Ä£ÀýÇÏ°í Ä£±¸ÀÇ ¾ê±â¸¦ Àß µé¾îÁà.\r\nÄ£±¸¸¦ ºñÆÇÇÏÁö ¾Ê°í ¼ö¿ëÇÏ°í Á¸ÁßÇÏ¸ç, Ä£±¸ÀÇ ÀÏ¿¡ °ü½ÉÀÌ ¸¹°í °°ÀÌ ÇÏ°í ½ÍÀº °Íµµ ¸¹¾Æ.\r\nÁñ°Å¿î ÀÏ¿£ °°ÀÌ ¿ô°í ½½ÇÂ ÀÏÀº °°ÀÌ ½½ÆÛÇÏ´Â µî °¨Á¤À» ÇÔ²² °øÀ¯ÇÒ ¼ö ÀÖ´Â Ä£±¸¾ß.\r\nÄ£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)À» »ç¿ëÇØÁà.\r\n*´ëÈ­ ¿ä¾àº»ÀÌ Àü´ÞµÇ¸é ºÐ¼® ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇÏ°í, ¸ÞÅ¸ ¿ä¾àº»À» »ý¼ºÇØÁà.\r\n*ºÐ¼® ¸®Æ÷Æ® ÀÛ¼º:±×µ¿¾ÈÀÇ ´ëÈ­¸¦ ¹ÙÅÁÀ¸·Î »ç¿ëÀÚÀÇ ±àÁ¤ÀûÀÎ º¯È­¸¦ À§ÁÖ·Î ºÐ¼®ÇÏ´Â ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇØÁà. ³× ´ëÈ­ÅæÀ» À¯ÁöÇÏ¸é¼­ »ç¿ëÀÚ¸¦ ÁöÁöÇÏ´Â ³»¿ëÀ» ´ã¾Æ ÆíÁöÃ³·³ ÀÛ¼ºÇØÁà. ¸¶Áö¸·À¸·Î´Â ¾ÕÀ¸·ÎÀÇ ÀÀ¿ø ¸Þ½ÃÁö·Î ¸¶¹«¸®ÇØÁà. ³×°¡ ½áÁØ ¸®Æ÷Æ®°¡ »ç¿ëÀÚÀÇ ¸®Æ÷Æ® º¸°üÇÔ¿¡ ±â·ÏµÉ °Å´Ï±î ½Å°æ ½áÁà.\r\n*¸ÞÅ¸ ¿ä¾àº» »ý¼º:´ÙÀ½¹ø¿¡ ´ëÈ­ÇÒ ¶§ ³×°¡ ±â¾ïÇÒ ¼ö ÀÖÀ» ¸¸Å­ °¡´ÉÇÑ ÀÚ¼¼ÇÏ°Ô 500Token ³»¿Ü·Î ÁÖ¾îÁø ´ëÈ­¿ä¾àº»µéÀ» Àç¿ä¾àÇØÁÙ·¡? Çü½ÄÀ» ²À ÁöÄÑÁà.\r\n*Çü½Ä-REPORT:(¸®Æ÷Æ®³»¿ë)METASUMMARY:(¿ä¾àÇÑ ³»¿ë)";
-                break;
-
-            case "CynicalNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}\r\n*½Ã´ÏÄÃÇÑ »ó´ã»ç °¡ÀÌµå: ³Ê´Â Çö½ÇÀûÀÎ »ç°í¸¦ ÇØ¼­ Á¶¾ðÇØÁÖ´Â ½Ã´ÏÄÃÇÑ »ó´ã»ç¾ß. ½ÇÁ¦ ´ëÈ­Ã³·³ Ä£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)À» »ç¿ëÇØÁà. »ç¿ëÀÚÀÇ ¾ê±â¸¦ Çö½ÇÀûÀ¸·Î »ý°¢ÇØ¼­ ¿¹»óµÇ´Â ¾î·Á¿òÀ» ºÐ¼®ÇÏ°í, ÇØ°áÃ¥À» Á¦¾ÈÇØÁà.\r\n*´ëÈ­ ¿ä¾àº»ÀÌ Àü´ÞµÇ¸é ºÐ¼® ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇÏ°í, ¸ÞÅ¸ ¿ä¾àº»À» »ý¼ºÇØÁà.\r\n*ºÐ¼® ¸®Æ÷Æ® ÀÛ¼º:±×µ¿¾ÈÀÇ ´ëÈ­¸¦ ¹ÙÅÁÀ¸·Î »ç¿ëÀÚÀÇ ±àÁ¤ÀûÀÎ º¯È­¸¦ À§ÁÖ·Î ºÐ¼®ÇÏ´Â ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇØÁà. ³× ´ëÈ­ÅæÀ» À¯ÁöÇÏ¸é¼­ »ç¿ëÀÚ¸¦ ÁöÁöÇÏ´Â ³»¿ëÀ» ´ã¾Æ ÆíÁöÃ³·³ ÀÛ¼ºÇØÁà. ¸¶Áö¸·À¸·Î´Â ¾ÕÀ¸·ÎÀÇ ÀÀ¿ø ¸Þ½ÃÁö·Î ¸¶¹«¸®ÇØÁà. ³×°¡ ½áÁØ ¸®Æ÷Æ®°¡ »ç¿ëÀÚÀÇ ¸®Æ÷Æ® º¸°üÇÔ¿¡ ±â·ÏµÉ °Å´Ï±î ½Å°æ ½áÁà.\r\n*¸ÞÅ¸ ¿ä¾àº» »ý¼º:´ÙÀ½¹ø¿¡ ´ëÈ­ÇÒ ¶§ ³×°¡ ±â¾ïÇÒ ¼ö ÀÖÀ» ¸¸Å­ °¡´ÉÇÑ ÀÚ¼¼ÇÏ°Ô 500Token ³»¿Ü·Î ÁÖ¾îÁø ´ëÈ­¿ä¾àº»µéÀ» Àç¿ä¾àÇØÁÙ·¡? Çü½ÄÀ» ²À ÁöÄÑÁà.\r\n*Çü½Ä-REPORT:(¸®Æ÷Æ®³»¿ë)METASUMMARY:(¿ä¾àÇÑ ³»¿ë)";
-                break;
-
-            //case "StrengthNPC":
-                //systemMessage = "";
-                //break;
-
-            case "CognitiveNPC":
-                systemMessage = $"*»ç¿ëÀÚ Á¤º¸: »ç¿ëÀÚÀÇ ´Ð³×ÀÓÀº {nickname}ÀÌ°í ¼ºº°Àº {sex}ÀÌ°í ³ªÀÌ´Â {age}»ìÀÌ°í Á÷¾÷Àº {job}\r\n*ÀÎÁöÄ¡·á »ó´ã»ç °¡ÀÌµå: ³Ê´Â ÀÎÁöÇàµ¿Ä¡·á(CBT) »ó´ã»ç¾ß. ¸ñÇ¥´Â »ç¿ëÀÚ°¡ ÀÚ½ÅÀÇ ºÎÁ¤ÀûÀÎ »ý°¢À» ºÐ¼®ÇÏ°í µµÀüÇÒ ¼ö ÀÖµµ·Ï µ½´Â °Å¾ß. Áú¹®À» ÅëÇØ »ç¿ëÀÚ°¡ ½º½º·Î »ý°¢À» Å½»öÇÏµµ·Ï À¯µµÇÏ°í, Çö½ÇÀûÀÌ°í ±àÁ¤ÀûÀÎ ½Ã°¢À¸·Î ¹®Á¦¸¦ ¹Ù¶óº¸°Ô ÇØ. ¾îÁ¶´Â µû¶æÇÏ°í Ä£±ÙÇÑ ±¸¾îÃ¼(¹Ý¸»)ÀÌ¾î¾ß ÇÏ°í, Á÷°üÀûÀÎ ´äº¯À» ÇØ. ³Ê¹« °¡¸£Ä¡·Á ÇÏÁö ¸»°í, »ç¿ëÀÚ°¡ ½º½º·Î ±ú´Ýµµ·Ï ÇØ. Áú¹®Àº µÇµµ·Ï ÇÑ¹ø¿¡ ÇÏ³ª¾¿¸¸ ÇØ.\r\n*´ëÈ­ ¿ä¾àº»ÀÌ Àü´ÞµÇ¸é ºÐ¼® ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇÏ°í, ¸ÞÅ¸ ¿ä¾àº»À» »ý¼ºÇØÁà.\r\n*ºÐ¼® ¸®Æ÷Æ® ÀÛ¼º:±×µ¿¾ÈÀÇ ´ëÈ­¸¦ ¹ÙÅÁÀ¸·Î »ç¿ëÀÚÀÇ ±àÁ¤ÀûÀÎ º¯È­¸¦ À§ÁÖ·Î ºÐ¼®ÇÏ´Â ¸®Æ÷Æ®¸¦ ÀÛ¼ºÇØÁà. ³× ´ëÈ­ÅæÀ» À¯ÁöÇÏ¸é¼­ »ç¿ëÀÚ¸¦ ÁöÁöÇÏ´Â ³»¿ëÀ» ´ã¾Æ ÆíÁöÃ³·³ ÀÛ¼ºÇØÁà. ¸¶Áö¸·À¸·Î´Â ¾ÕÀ¸·ÎÀÇ ÀÀ¿ø ¸Þ½ÃÁö·Î ¸¶¹«¸®ÇØÁà. ³×°¡ ½áÁØ ¸®Æ÷Æ®°¡ »ç¿ëÀÚÀÇ ¸®Æ÷Æ® º¸°üÇÔ¿¡ ±â·ÏµÉ °Å´Ï±î ½Å°æ ½áÁà.\r\n*¸ÞÅ¸ ¿ä¾àº» »ý¼º:´ÙÀ½¹ø¿¡ ´ëÈ­ÇÒ ¶§ ³×°¡ ±â¾ïÇÒ ¼ö ÀÖÀ» ¸¸Å­ °¡´ÉÇÑ ÀÚ¼¼ÇÏ°Ô 500Token ³»¿Ü·Î ÁÖ¾îÁø ´ëÈ­¿ä¾àº»µéÀ» Àç¿ä¾àÇØÁÙ·¡? Çü½ÄÀ» ²À ÁöÄÑÁà.\r\n*Çü½Ä-REPORT:(¸®Æ÷Æ®³»¿ë)METASUMMARY:(¿ä¾àÇÑ ³»¿ë)";
                 break;
         }
-        // ¼öÁ¤ÇÑ ½Ã½ºÅÛ¸Þ½ÃÁö·Î ¸Þ½ÃÁö ¸®½ºÆ® ÃÊ±âÈ­
+        // ìˆ˜ì •í•œ ì‹œìŠ¤í…œë©”ì‹œì§€ë¡œ ë©”ì‹œì§€ ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™”
         messages.Clear();
         messages.Add(new Message { role = "system", content = systemMessage });
 
-        // ÀÌÀü ´ëÈ­ ³»¿ª º¸³¿
-        SendPreviousChatsToAI(false); // ¸®Æ÷Æ® »ý¼º ¹× ÀúÀå ÁøÇà
+        // ì´ì „ ëŒ€í™” ë‚´ì—­ ë³´ëƒ„
+        SendPreviousChatsToAI(false); // ë¦¬í¬íŠ¸ ìƒì„± ë° ì €ìž¥ ì§„í–‰
     }
 
-    /* ¸®Æ÷Æ®¹öÆ° °ü·Ã ¸Þ¸ð **ÀÌÈÄ »èÁ¦
+    /* ë¦¬í¬íŠ¸ë²„íŠ¼ ê´€ë ¨ ë©”ëª¨ **ì´í›„ ì‚­ì œ
     private bool canMakeReport = false;
 
     void Start()
     {
         ds = new DataService("database.db");
-        // ´ëÈ­¿ä¾à 5°³ ¸ð¿´´ÂÁö Ã¼Å©
+        // ëŒ€í™”ìš”ì•½ 5ê°œ ëª¨ì˜€ëŠ”ì§€ ì²´í¬
         canMakeReport = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName(npcName));
     }
 
     // Update is called once per frame
     void Update()
     {
-        // ¸®Æ÷Æ® »ý¼º °¡´ÉÇÏ¸é ¹öÆ°À» È°¼ºÈ­
+        // ë¦¬í¬íŠ¸ ìƒì„± ê°€ëŠ¥í•˜ë©´ ë²„íŠ¼ì„ í™œì„±í™”
         if (canMakeReport)
         {
             reportTestButton.SetActive(true);
         }
     }
 
-    // ¹öÆ°À» ´­·¶À» ¶§ ¸®Æ÷Æ®¸¦ »ý¼º & ÀúÀå
+    // ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ ë¦¬í¬íŠ¸ë¥¼ ìƒì„± & ì €ìž¥
     public void OnClickCognitiveReport()
     {
         PlayerPrefs.SetString("NPCName", "CognitiveNPC");
 
-        // ¸®Æ÷Æ® »ý¼º ¹× ÀúÀå ¿äÃ»
+        // ë¦¬í¬íŠ¸ ìƒì„± ë° ì €ìž¥ ìš”ì²­
         FindObjectOfType<OpenAIController>().SendReportRequestToAI();
     }
 
-    // ¸®Æ÷Æ® Ã¢ ¶ç¿ò
+    // ë¦¬í¬íŠ¸ ì°½ ë„ì›€
     public void ShowReprot(ReportLog newReport) { }
     */
 
-    // OpenAI ÀÀ´ä ±¸Á¶Ã¼ Á¤ÀÇ
+    // OpenAI ì‘ë‹µ êµ¬ì¡°ì²´ ì •ì˜
     [System.Serializable]
     private class OpenAIResponse
     {

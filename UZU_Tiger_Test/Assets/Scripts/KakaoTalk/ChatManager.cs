@@ -69,7 +69,7 @@ public class ChatManager : MonoBehaviour
                 break;
 
             case "CynicalNPC":
-                Chat(false, gptResponse, "현실적인 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
+                Chat(false, gptResponse, "시니컬한 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
                 break;
 
             case "StrengthNPC":

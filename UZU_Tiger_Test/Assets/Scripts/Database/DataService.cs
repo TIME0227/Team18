@@ -227,7 +227,7 @@ public class DataService
     public bool HasFiveNotReportedSessionLogs(int counselor_id)
     {
         var notReportedLogs = GetNotReportedSessionLog(counselor_id).ToList(); // Count를 쓰기 위해 리스트로 변환
-        return notReportedLogs.Count == 5;
+        return notReportedLogs.Count >= 5;
     }
 
     // 새로 리포트를 생성한 SessionLog의 Report_id를 업데이트하는 함수
