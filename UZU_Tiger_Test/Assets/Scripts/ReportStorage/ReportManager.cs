@@ -4,6 +4,8 @@ using TMPro;
 using System.Linq;
 using System;
 using System.Collections;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
 public class ReportManager : MonoBehaviour
 {
@@ -13,53 +15,33 @@ public class ReportManager : MonoBehaviour
     public TMP_Text Report_Date;
     public TMP_Text Report_NPCName;
     public Sprite[] npcPortraits;        // 각 상담사 초상화 이미지
+    public Button showReportBtn;
+
+    private int NPCflag = 0;
+    // cog = 1 , kind = 3, cynical = 4
 
     DataService ds;
+    DialogueManager dm;
 
     private void Awake()
     {
         ds = new DataService("database.db");
+        dm = GetComponent<DialogueManager>();
         Report.SetActive(false);
     }
 
+    public void Onclick_ShowCynicalReportBtn()
+    {
+        OnReportGenerated();
+        showReportBtn.gameObject.SetActive(false);
+    }
 
     #region CognitiveNPC
     public void OnClick_CreateReport_CognitiveNPC()
     {
-        // NPC 이름 설정
-        PlayerPrefs.SetString("NPCName", "CognitiveNPC");
-
-        // 리포트 생성 요청
-        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
-        openAIController.SendReportRequestToAI();
-
-        // 리포트 생성 후 처리 대기
-        StartCoroutine(WaitForReportResponse_Cognitive());
-
-    }
-
-    private IEnumerator WaitForReportResponse_Cognitive()
-    {
-        // 응답 대기 (필요한 시간만큼 대기)
-        yield return new WaitForSeconds(1.0f); // 필요한 시간으로 설정
-
-        // 리포트 생성 후 처리할 메서드 호출
-        OnReportGenerated_Cognitive();
-    }
-
-    private void OnReportGenerated_Cognitive()
-    {
-        // 리포트 생성이 완료된 후 불러오기
-        var reportLogs = ds.GetReportLog(1);
-        ReportLog reportLog = reportLogs.FirstOrDefault();
-
-        if (reportLog != null)
+        if (dm.canMakeReport_Cognitive)
         {
-            // 리포트 텍스트 설정
-            Report_Text.text = reportLog.Content;
-
-            // 리포트 생성 날짜 설정
-            Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
+            NPCflag = 1;
 
             // NPC 이름 설정
             Report_NPCName.text = "인지치료 상담새";
@@ -69,49 +51,28 @@ public class ReportManager : MonoBehaviour
 
             // 리포트 내용 화면에 출력
             ShowReport();
+
+            // NPC 이름 설정
+            PlayerPrefs.SetString("NPCName", "CognitiveNPC");
+
+            // 리포트 생성 요청
+            OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+            openAIController.SendReportRequestToAI();
+        }
+        else
+        {
+            Debug.Log("리포트 생성 불가");
         }
 
-        // 이벤트 구독 해제
-        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Cognitive;
     }
     #endregion
 
     #region KindNPC
     public void OnClick_CreateReport_KindNPC()
     {
-        // NPC 이름 설정
-        PlayerPrefs.SetString("NPCName", "KindNPC");
-
-        // 리포트 생성 요청
-        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
-        openAIController.SendReportRequestToAI();
-
-        // 리포트 생성 후 처리 대기
-        StartCoroutine(WaitForReportResponse());
-    }
-
-    private IEnumerator WaitForReportResponse()
-    {
-        // 응답 대기 (필요한 시간만큼 대기)
-        yield return new WaitForSeconds(2.0f); // 필요한 시간으로 설정
-
-        // 리포트 생성 후 처리할 메서드 호출
-        OnReportGenerated_Kind();
-    }
-
-    private void OnReportGenerated_Kind()
-    {
-        // 리포트 생성이 완료된 후 불러오기
-        var reportLogs = ds.GetReportLog(3);
-        ReportLog reportLog = reportLogs.FirstOrDefault();
-
-        if (reportLog != null)
+        if (dm.canMakeReport_Kind)
         {
-            // 리포트 텍스트 설정
-            Report_Text.text = reportLog.Content;
-
-            // 리포트 생성 날짜 설정
-            Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
+            NPCflag = 3;
 
             // NPC 이름 설정
             Report_NPCName.text = "상냥한 상담새";
@@ -121,41 +82,54 @@ public class ReportManager : MonoBehaviour
 
             // 리포트 내용 화면에 출력
             ShowReport();
-        }
 
-        // 이벤트 구독 해제
-        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Kind;
+            // NPC 이름 설정
+            PlayerPrefs.SetString("NPCName", "KindNPC");
+
+            // 리포트 생성 요청
+            OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+            openAIController.SendReportRequestToAI();
+        }
+        else
+        {
+            Debug.Log("리포트 생성 불가");
+        }
+        
     }
     #endregion
-
 
     #region Cynical
     public void OnClick_CreateReport_CynicalNPC()
     {
-        // NPC 이름 설정
-        PlayerPrefs.SetString("NPCName", "CynicalNPC");
+        if (dm.canMakeReport_Cynical)
+        {
+            NPCflag = 4;
 
-        // 리포트 생성 요청
-        OpenAIController openAIController = FindObjectOfType<OpenAIController>();
-        openAIController.SendReportRequestToAI();
+            // NPC 이름 설정
+            Report_NPCName.text = "시니컬한 상담새";
 
-        // 리포트 생성 후 처리 대기
-        StartCoroutine(WaitForReportResponse_Cynical());
+            // NPC 초상화 이미지 설정
+            NPC_portrait.sprite = npcPortraits[3];
+
+            // 리포트 내용 화면에 출력
+            ShowReport();
+
+            // NPC 이름 설정
+            PlayerPrefs.SetString("NPCName", "CynicalNPC");
+
+            // 리포트 생성 요청
+            OpenAIController openAIController = FindObjectOfType<OpenAIController>();
+            openAIController.SendReportRequestToAI();
+        }
+        else
+        {
+            Debug.Log("리포트 생성 불가");
+        }
     }
 
-    private IEnumerator WaitForReportResponse_Cynical()
+    private void OnReportGenerated()
     {
-        // 응답 대기 (필요한 시간만큼 대기)
-        yield return new WaitForSeconds(1.0f); // 필요한 시간으로 설정
-
-        // 리포트 생성 후 처리할 메서드 호출
-        OnReportGenerated_Cynical();
-    }
-
-    private void OnReportGenerated_Cynical()
-    {
-        // 리포트 생성이 완료된 후 불러오기
-        var reportLogs = ds.GetReportLog(4);
+        var reportLogs = ds.GetReportLog(NPCflag);
         ReportLog reportLog = reportLogs.FirstOrDefault();
 
         if (reportLog != null)
@@ -166,25 +140,12 @@ public class ReportManager : MonoBehaviour
             // 리포트 생성 날짜 설정
             Report_Date.text = reportLog.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
 
-            // NPC 이름 설정
-            Report_NPCName.text = "시니컬한 상담새";
-
-            // NPC 초상화 이미지 설정
-            NPC_portrait.sprite = npcPortraits[3];
-
             // 리포트 내용 화면에 출력
             ShowReport();
         }
 
-        // 이벤트 구독 해제
-        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnReportGenerated_Cynical;
     }
     #endregion
-
-    public void OnClick_TestReport()
-    {
-        ShowReport();
-    }
 
     // 리포트 팝업 띄움
     public void ShowReport()
@@ -196,6 +157,7 @@ public class ReportManager : MonoBehaviour
     public void OnClickCloseReportBtn()
     {
         Report.SetActive(false);
+        SceneManager.LoadScene("ReportStorage");
     }
 
 }

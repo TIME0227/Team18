@@ -21,6 +21,15 @@ public class ChatManager : MonoBehaviour
     public TMP_InputField InputField;
     public Button sendBtn;
 
+    public GameObject checkClose;
+    public GameObject checkRS;
+
+    private void Awake()
+    {
+        checkClose.SetActive(false);
+        checkRS.SetActive(false);
+    }
+
     public void OnClick_sendBtn()
     {
         text = InputField.text;
@@ -188,31 +197,62 @@ public class ChatManager : MonoBehaviour
 
     void ScrollDelay() => scrollBar.value = 0;
 
-    
+    #region 기록보관소 버튼
     public void OnClick_reportStorageBtn()
     {
-        // 저장하는 기능 구현 필요
-        // 요약본(text 형식) 생성 함수 호출
-        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+        // 기록보관소 이동 확인창 띄우기
+        checkRS.SetActive(true);
+    }
 
+    // 네
+    public void OnClick_checkreportStorageBtn()
+    {
+        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete2);
+    }
+
+    // 아니오
+    public void OnClick_checkreportStorageBtn2()
+    {
+        checkRS.SetActive(false);
+    }
+
+    // 기록보관소 버튼용
+    private void OnSaveChatComplete2()
+    {
+        FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnSaveChatComplete; // 구독 해제
         PlayerPrefs.SetString("NPCName", "ReporterNPC"); // 기록보관 씬에서는 채팅기능 실행되지 않게...
-
         SceneManager.LoadScene("ReportStorage");
     }
+    #endregion
 
+
+    #region 닫기 버튼
     public void OnClick_closeChatBtn()
     {
-        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
-
-        // 리포트 생성해야 하는지 체크 & 리포트 생성이랑 저장하는 부분도 close 버튼 누를 때 되도록 구현 필요
-
+        // 종료 확인창 띄우기
+        checkClose.SetActive(true);
     }
 
+    // 네
+    public void OnClick_checkCloseChatBtn()
+    {
+        FindObjectOfType<OpenAIController>().EndSessionAndSaveChat(OnSaveChatComplete);
+    }
+
+    // 아니오
+    public void OnClick_checkCloseChatBtn2()
+    {
+        checkClose.SetActive(false);
+    }
+
+    // 닫기 버튼용
     private void OnSaveChatComplete()
     {
         FindObjectOfType<OpenAIController>().OnSumaryResponseReceived -= OnSaveChatComplete; // 구독 해제
-
-        SceneManager.LoadScene("Main");
         Debug.Log("대화를 종료하고 저장합니다.");
+        SceneManager.LoadScene("Main");
     }
+    #endregion
+
+
 }

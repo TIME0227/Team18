@@ -110,8 +110,6 @@ public class DialogueManager : MonoBehaviour
 
     public void createDialogueContent(SessionLog log)
     {
-
-
         // 대화 내용이 없으면 리턴
         if (string.IsNullOrWhiteSpace(log.Summary)) return;
 
@@ -137,9 +135,6 @@ public class DialogueManager : MonoBehaviour
         // 현재 대화 로그 저장
         sessionLog = log;
     }
-
-
-
 
     public void OnClick_backtoMain()
     {
