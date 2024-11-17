@@ -21,6 +21,12 @@ public class Intro : MonoBehaviour
 
     public CameraPositionSaver cameraPositionSaver;
 
+    // 최초 실행 여부를 확인하기 위한 키
+    private const string FirstPlayKey = "FirstPlay";
+
+    // 키 초기화
+    // PlayerPrefs.DeleteKey("FirstPlay");
+
     void Start()
     {
         // 초기 설정: 텍스트의 색상 alpha 값을 1로 설정합니다.
@@ -81,11 +87,25 @@ public class Intro : MonoBehaviour
         }
     }
 
-    // 다음 씬을 로드하는 함수 (씬 전환 부분은 필요에 맞게 수정하세요)
+    // 다음 씬을 로드하는 함수
     void LoadNextScene()
     {
-        // 여기에 다음 씬의 이름을 지정합니다.
-        string nextSceneName = "Settings_Tutorial";
+        string nextSceneName;
+
+        // 최초 실행 여부 확인
+        if (PlayerPrefs.GetInt(FirstPlayKey, 0) == 0)
+        {
+            // 최초 실행 시 Settings_Tutorial로 이동
+            nextSceneName = "Settings_Tutorial";
+            PlayerPrefs.SetInt(FirstPlayKey, 1); // 최초 실행 기록 저장
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            // 이후 실행 시 Main으로 이동
+            nextSceneName = "Main";
+        }
+
         cameraPositionSaver.SaveCameraPosition();
         SceneManager.LoadScene(nextSceneName);
     }
