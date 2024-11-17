@@ -101,10 +101,23 @@ public class DataService
 
     // 한 상담사의 SessionLog를 모두 반환하는 함수
     // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
-    public IEnumerable<SessionLog> GetSessionLog(int counselor_id = 0)
+    // is_ascending 따라 생성시각 오름차순 or 내림차순 정렬
+    public IEnumerable<SessionLog> GetSessionLog(int counselor_id = 0, int is_ascending = 1)
     {
-        if (counselor_id == 0) return _connection.Table<SessionLog>(); // 파라미터 없이 사용할 경우 모든 데이터 반환
-        return _connection.Table<SessionLog>().Where(x => x.Counselor_id == counselor_id);
+        if (counselor_id == 0) // 파라미터 없이 사용할 경우 모든 데이터 반환
+        {
+            return is_ascending == 1
+                ? _connection.Table<SessionLog>().OrderBy(x => x.Created_at)
+                : _connection.Table<SessionLog>().OrderByDescending(x => x.Created_at);
+        }
+        return is_ascending == 1
+            ? _connection.Table<SessionLog>()
+                .Where(x => x.Counselor_id == counselor_id)
+                .OrderBy(x => x.Created_at)
+            : _connection.Table<SessionLog>()
+                .Where(x => x.Counselor_id == counselor_id)
+                .OrderByDescending(x => x.Created_at);
+
     }
     // 예시
     /*
@@ -127,14 +140,18 @@ public class DataService
     // 1:Cognitive, 2:Strength, 3:Kind, 4:Cynical
     public IEnumerable<SessionLog> GetNotReportedSessionLog(int counselor_id)
     {
-        return _connection.Table<SessionLog>().Where(x => x.Counselor_id == counselor_id && x.Report_id == null);
+        return _connection.Table<SessionLog>()
+            .Where(x => x.Counselor_id == counselor_id && x.Report_id == null)
+            .OrderBy(x => x.Created_at);
     }
 
     // 한 상담사의 리포트를 모두 반환하는 함수
     public IEnumerable<ReportLog> GetReportLog(int counselor_id = 0)
     {
         if (counselor_id == 0) return _connection.Table<ReportLog>(); // 파라미터 사용하지 않으면 모든 데이터 반환
-        return _connection.Table<ReportLog>().Where(x => x.Counselor_id == counselor_id);
+        return _connection.Table<ReportLog>()
+            .Where(x => x.Counselor_id == counselor_id)
+            .OrderBy(x => x.Created_at);
     }
     // 예시
     /*
@@ -250,6 +267,7 @@ public class DataService
         if (sessionLog != null)
         {
             _connection.Delete(sessionLog);
+            Debug.Log("DB에서 데이터를 삭제했습니다.");
         }
     }
     // 예시: DeleteOneSessionLog(log.Id);
@@ -261,6 +279,7 @@ public class DataService
         if (reportnLog != null)
         {
             _connection.Delete(reportnLog);
+            Debug.Log("DB에서 데이터를 삭제했습니다.");
         }
     }
 

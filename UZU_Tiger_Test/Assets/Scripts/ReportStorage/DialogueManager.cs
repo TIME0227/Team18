@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using static UnityEngine.Tilemaps.TilemapRenderer;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -31,6 +32,11 @@ public class DialogueManager : MonoBehaviour
 
     public Sprite unActiveSprite;
 
+    public Button DateSortButton;
+    int sortOrder; // 오름차순/내림차순 표기 방법
+    public Sprite ascendingSprite;
+    public Sprite descendingSprite;
+
     public void Awake()
     {
         Dialogue = GetComponent<DialogueScript>();
@@ -44,34 +50,11 @@ public class DialogueManager : MonoBehaviour
         npcName = PlayerPrefs.GetString("NPCName");
         Debug.Log("DialogueManager : " + npcName);
 
-        // DB에 있는 모든 현재 대화 요약본 데이터 가져오기
-        for (int counselorId = 1; counselorId <= 4; counselorId++)
-        {
-            var sessionLogs = ds.GetSessionLog(counselorId); // 각 상담사에 대한 로그 가져오기
-            Debug.Log($"SessionLogs for Counselor {counselorId}: Count = {sessionLogs.Count()}");
+        // 오름차순/내림차순 표기 설정 가져오기, 기본값은 오름차순 정렬
+        sortOrder = PlayerPrefs.GetInt("isSortByAscending", 1);
 
-            // 모든 SessionLog에서 Summary를 사용해 각각의 대화 프리팹 생성
-            foreach (var log in sessionLogs)
-            {
-                if (log != null)
-                {
-                    Debug.Log($"Checking SessionLog Id: {log.Id}, Summary: {log.Summary}");
-
-                    if (!string.IsNullOrWhiteSpace(log.Summary))
-                    {
-                        createDialogueContent(log); // 각각의 대화 요약본을 대화 프리팹으로 출력
-                    }
-                    else
-                    {
-                        Debug.Log($"SessionLog Id {log.Id} has an empty Summary.");
-                    }
-                }
-                else
-                {
-                    Debug.Log("SessionLog is null");
-                }
-            }
-        }
+        InitializeUI();
+        updateSortBtnAppearance();
 
         // 대화 내용 요약본이 5개 이상인지 확인
         canMakeReport_Kind = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("KindNPC"));
@@ -96,6 +79,9 @@ public class DialogueManager : MonoBehaviour
             CRB_CognitiveBtnImg.sprite = unActiveSprite;
         else
             CRB_CognitiveBtnImg.sprite = Resources.Load<Sprite>("NPC_P/Circle Button - Yellow");
+
+
+
     }
 
     private void Update()
@@ -105,6 +91,38 @@ public class DialogueManager : MonoBehaviour
             // dialogueInstance가 null일 경우 로그를 출력하고 return
             Debug.Log("dialogueInstance가 null입니다.");
             return;
+        }
+    }
+
+    public void InitializeUI()
+    {
+        // DB에 있는 모든 현재 대화 요약본 데이터 가져오기
+        for (int counselorId = 1; counselorId <= 4; counselorId++)
+        {
+            var sessionLogs = ds.GetSessionLog(counselorId, sortOrder); // 각 상담사에 대한 로그 가져오기
+            Debug.Log($"SessionLogs for Counselor {counselorId}: Count = {sessionLogs.Count()}");
+
+            // 모든 SessionLog에서 Summary를 사용해 각각의 대화 프리팹 생성
+            foreach (var log in sessionLogs)
+            {
+                if (log != null)
+                {
+                    Debug.Log($"Checking SessionLog Id: {log.Id}, Summary: {log.Summary}");
+
+                    if (!string.IsNullOrWhiteSpace(log.Summary))
+                    {
+                        createDialogueContent(log); // 각각의 대화 요약본을 대화 프리팹으로 출력
+                    }
+                    else
+                    {
+                        Debug.Log($"SessionLog Id {log.Id} has an empty Summary.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("SessionLog is null");
+                }
+            }
         }
     }
 
@@ -130,14 +148,44 @@ public class DialogueManager : MonoBehaviour
         }
 
         // 요약본 생성 날짜 설정
-        dialogueInstance.GetComponentInChildren<DialogueScript>().Dialogue_Date.text = log.Created_at.ToString("yyyy-MM-dd HH:mm:ss");
+        dialogueInstance.GetComponentInChildren<DialogueScript>().Dialogue_Date.text = log.Created_at.ToString("yyyy년 M월 d일 HH:mm:ss");
 
-        // 현재 대화 로그 저장
-        sessionLog = log;
+        // id 설정
+        dialogueInstance.GetComponentInChildren<DialogueScript>().Dialogue_id = log.Id;
+
+       // 현재 대화 로그 저장
+       sessionLog = log;
+    }
+
+    // setOrder 값에 따라 버튼 이미지 변경
+    private void updateSortBtnAppearance()
+    {
+        Image DateSortButtonImg = DateSortButton.GetComponent<Image>();
+
+        if (sortOrder == 0) DateSortButtonImg.sprite = ascendingSprite;
+        else DateSortButtonImg.sprite = descendingSprite;
     }
 
     public void OnClick_backtoMain()
     {
         SceneManager.LoadScene("Main");
+    }
+
+    // 날짜 정렬 바꾸는 버튼
+    public void OnClick_dateSortButton()
+    {
+        sortOrder = sortOrder == 0 ? 1 : 0; // 값을 토글
+        PlayerPrefs.SetInt("isSortByAscending", sortOrder);
+        PlayerPrefs.Save(); // 변경 사항 저장
+
+        // 기존 UI 초기화
+        foreach (Transform child in dialogueParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 새 UI 생성
+        InitializeUI();
+        updateSortBtnAppearance();
     }
 }
