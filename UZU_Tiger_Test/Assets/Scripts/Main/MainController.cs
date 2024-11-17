@@ -11,9 +11,29 @@ public class MainController : MonoBehaviour
     public GameObject WDEPNPCInfo;
     public GameObject CognitiveNPCInfo;
 
+    public GameObject NewReportAlert;
+    DataService ds;
+    bool canMakeReport_Kind = false;
+    bool canMakeReport_Cynical = false;
+    bool canMakeReport_Cognitive = false;
+
+    public void Awake()
+    {
+        ds = new DataService("database.db"); // 데이터베이스 연결
+    }
+
+
     public void Start()
     {
         disableNPCInfo();
+
+
+        // 대화 내용 요약본이 5개 이상인지 확인
+        canMakeReport_Kind = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("KindNPC"));
+        canMakeReport_Cynical = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CynicalNPC"));
+        canMakeReport_Cognitive = ds.HasFiveNotReportedSessionLogs(ds.GetCounselorIdByName("CognitiveNPC"));
+
+        UpdateNewReportAlert();
     }
 
     public void Update()
@@ -137,4 +157,17 @@ public class MainController : MonoBehaviour
         // Debug.Log("대화 기록 보관 기능 생기면 주석 해제");
     }
 
+    public void UpdateNewReportAlert()
+    {
+        if (canMakeReport_Kind || canMakeReport_Cynical || canMakeReport_Cognitive)
+        {
+            NewReportAlert.SetActive(true);
+            //Debug.Log("새로운 리포트 알림 활성화");
+        }
+        else
+        {
+            NewReportAlert.SetActive(false);
+            //Debug.Log("새로운 리포트 알림 비활성화");
+        }
+    }
 }
