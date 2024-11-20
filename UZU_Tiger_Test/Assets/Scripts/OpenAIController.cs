@@ -21,7 +21,8 @@ public class OpenAIController : MonoBehaviour
     private string apiKey;  // OpenAI API 키
     // private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    private string proxyUrl = "http://localhost:3000/chatgpt"; // 프록시 서버 URL
+    //private string proxyUrl = "http://localhost:3000/chatgpt"; // 프록시 서버 URL(로컬호스트에서 테스트용)
+    private string proxyUrl = "https://team18-server.vercel.app/chatgpt"; // 프록시 서버 URL
 
     // 채팅 기록을 저장할 리스트
     private List<Message> messages;
@@ -213,7 +214,7 @@ public class OpenAIController : MonoBehaviour
         {
             // 응답 메시지 처리
             var response = JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text);
-            string responseContent = response.reply.Trim();
+            string responseContent = response.response.Trim();
             // 응답 메시지 리스트에 추가
             messages.Add(new Message { role = "assistant", content = responseContent });
 
@@ -395,10 +396,11 @@ public class OpenAIController : MonoBehaviour
 
     // OpenAI 응답 구조체 정의
     // 현재 응답은 { "reply": ... } 형식이므로 이에 맞추어 OpenAIResponse 클래스 수정
+    
     [System.Serializable]
     private class OpenAIResponse
     {
-        public string reply { get; set; }
+        public string response { get; set; }
     }
 
     /* OpenAI API의 표준 응답 구조
