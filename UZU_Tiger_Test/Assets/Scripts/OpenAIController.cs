@@ -18,7 +18,7 @@ public class OpenAIController : MonoBehaviour
     string nickname; string sex; string age; string job; // 사용자 정보
 
     public string systemMessage;  // 시스템 메시지
-    private string apiKey;  // OpenAI API 키
+    // private string apiKey;  // OpenAI API 키
     // private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
     //private string proxyUrl = "http://localhost:3000/chatgpt"; // 프록시 서버 URL(로컬호스트에서 테스트용)

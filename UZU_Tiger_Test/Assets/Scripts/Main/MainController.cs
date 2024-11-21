@@ -170,4 +170,10 @@ public class MainController : MonoBehaviour
             //Debug.Log("새로운 리포트 알림 비활성화");
         }
     }
+
+    // 유저정보 수정(튜토리얼) 씬으로 이동
+    public void OnClick_userSettingsBtn()
+    {
+        SceneManager.LoadScene("Settings_Tutorial");
+    }
 }

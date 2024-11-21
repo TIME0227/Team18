@@ -23,6 +23,18 @@ public class UserDataManager : MonoBehaviour
         tutorialObject.SetActive(false);
         settingsObject.SetActive(true);
 
+        // 기존에 저장된 값을 입력창에 표시
+        string userNickname = GetUserData("Nickname");
+        string userSex = GetUserData("Sex");
+        string userAge = GetUserData("Age");
+        string userJob = GetUserData("Job");
+
+        nicknameInput.text = !string.IsNullOrEmpty(userNickname) ? userNickname : "";
+        sexInput.text = !string.IsNullOrEmpty(userSex) ? userSex : "";
+        ageInput.text = !string.IsNullOrEmpty(userAge) ? userAge : "";
+        jobInput.text = !string.IsNullOrEmpty(userJob) ? userJob : "";
+
+
         // 버튼 클릭 이벤트 리스너 설정
         saveBtn.onClick.AddListener(SaveData);
         skipBtn.onClick.AddListener(SkipData);
