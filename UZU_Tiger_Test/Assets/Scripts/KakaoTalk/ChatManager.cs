@@ -74,19 +74,19 @@ public class ChatManager : MonoBehaviour
         switch (PlayerPrefs.GetString("NPCName"))
         {
             case "KindNPC":
-                Chat(false, gptResponse, "상냥한 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Pink"));
+                Chat(false, gptResponse, "상냥한 상담새", Resources.Load<Texture2D>("ETC/Kindport"));
                 break;
 
             case "CynicalNPC":
-                Chat(false, gptResponse, "시니컬한 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Green"));
+                Chat(false, gptResponse, "시니컬한 상담새", Resources.Load<Texture2D>("ETC/Cynicalport"));
                 break;
 
             case "StrengthNPC":
-                Chat(false, gptResponse, "장점찾기 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Purple"));
+                Chat(false, gptResponse, "장점찾기 상담새", Resources.Load<Texture2D>("ETC/wdepport"));
                 break;
 
             case "CognitiveNPC":
-                Chat(false, gptResponse, "인지치료 상담새", Resources.Load<Texture2D>("ETC/Angel Bunny - Yellow"));
+                Chat(false, gptResponse, "인지치료 상담새", Resources.Load<Texture2D>("ETC/Cognitiveport"));
                 break;
         }
     }
