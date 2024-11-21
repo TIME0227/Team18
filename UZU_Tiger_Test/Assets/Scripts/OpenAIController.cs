@@ -19,7 +19,10 @@ public class OpenAIController : MonoBehaviour
 
     public string systemMessage;  // 시스템 메시지
     private string apiKey;  // OpenAI API 키
-    private string apiUrl = "https://api.openai.com/v1/chat/completions";
+    // private string apiUrl = "https://api.openai.com/v1/chat/completions";
+
+    //private string proxyUrl = "http://localhost:3000/chatgpt"; // 프록시 서버 URL(로컬호스트에서 테스트용)
+    private string proxyUrl = "https://team18-server.vercel.app/chatgpt"; // 프록시 서버 URL
 
     // 채팅 기록을 저장할 리스트
     private List<Message> messages;
@@ -77,7 +80,13 @@ public class OpenAIController : MonoBehaviour
     void Start()
     {
         // API 키 로드
-        LoadApiKey(); // 키 로드 후 저장된 대화기록 가져옴
+        //LoadApiKey(); // 키 로드 후 저장된 대화기록 가져옴
+
+        // 저장된 대화기록을 가져와서 이전 대화 기억(장점찾기의 경우 안내문구로 대체됨)
+        if (npcName == "KindNPC" || npcName == "CynicalNPC" || npcName == "StrengthNPC" || npcName == "CognitiveNPC")
+        {
+            SendPreviousChatsToAI(true);
+        }
     }
 
     /*private void LoadApiKey()
@@ -98,6 +107,7 @@ public class OpenAIController : MonoBehaviour
         }
     }*/
 
+    /* API Key 관련 코드, 폐기함
     private void LoadApiKey()
     {
         string configPath = Path.Combine(Application.streamingAssetsPath, "config.json");
@@ -163,7 +173,7 @@ public class OpenAIController : MonoBehaviour
         }
         onComplete?.Invoke();
     }
-
+    */
 
 
     // 사용자가 메시지를 보냈을 때 GPT에게 메시지를 보내는 함수
@@ -173,12 +183,6 @@ public class OpenAIController : MonoBehaviour
         {
             return;
         }
-
-        // 메시지 길이 제한 - 이전대화내역 보내기 위해 길이 제한 늘림
-        //if (userMessage.Length > 500)
-        //{
-        //userMessage = userMessage.Substring(0, 500);
-        //}
 
         // 메시지 리스트에 사용자 메시지 추가
         messages.Add(new Message { role = "user", content = userMessage });
@@ -191,9 +195,40 @@ public class OpenAIController : MonoBehaviour
 
     public void SendRequest(string prompt, Action<string> callback)
     {
-        StartCoroutine(PostRequest(prompt, callback));
+        //StartCoroutine(PostRequest(prompt, callback));
+        StartCoroutine(PostRequest(JsonConvert.SerializeObject(new { messages }), callback));
     }
 
+    // 프록시서버에서 OpenAI API를 처리
+    private IEnumerator PostRequest(string json, Action<string> callback)
+    {
+        UnityWebRequest request = new UnityWebRequest(proxyUrl, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            // 응답 메시지 처리
+            var response = JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text);
+            string responseContent = response.response.Trim();
+            // 응답 메시지 리스트에 추가
+            messages.Add(new Message { role = "assistant", content = responseContent });
+
+            // 콜백을 통해 응답 처리
+            callback(responseContent);
+        }
+        else
+        {
+            Debug.LogError("요청 실패: " + request.error);
+        }
+    }
+
+    /*
+    // Unity에서 OpenAI API 처리
     private IEnumerator PostRequest(string prompt, Action<string> callback)
     {
         var requestData = new
@@ -229,15 +264,6 @@ public class OpenAIController : MonoBehaviour
             // 콜백을 통해 응답 처리
             callback(responseContent);
         }
-    }
-
-    /*// 응답을 받았을 때 호출되는 메서드
-    private void OnResponseReceived(string response)
-    {
-        Debug.Log("ChatGPT Response: " + response);
-
-        // 토르의 응답을 하얀 말풍선으로 화면에 표시
-        FindObjectOfType<ChatManager>().ReceiveMessage(response);
     }*/
 
     // 응답을 받았을 때 호출되는 메서드
@@ -313,11 +339,12 @@ public class OpenAIController : MonoBehaviour
     // 이전 대화를 기억하기 위한 유저 메시지를 gpt에 보내고 응답(NPC가 먼저 첫인사)을 받음
     public void SendPreviousChatsToAI(bool is_sessionlog)
     {
+        /*
         if (string.IsNullOrEmpty(apiKey))
         {
             Debug.LogError("API 키가 설정되지 않았습니다. config.json 파일을 확인하세요.");
             return;
-        }
+        }*/
 
         string chat_history = ds.GetConversationHistory(ds.GetCounselorIdByName(npcName), is_sessionlog);
         SendMessageToAI(chat_history);
@@ -368,6 +395,15 @@ public class OpenAIController : MonoBehaviour
     }
 
     // OpenAI 응답 구조체 정의
+    // 현재 응답은 { "reply": ... } 형식이므로 이에 맞추어 OpenAIResponse 클래스 수정
+    
+    [System.Serializable]
+    private class OpenAIResponse
+    {
+        public string response { get; set; }
+    }
+
+    /* OpenAI API의 표준 응답 구조
     [System.Serializable]
     private class OpenAIResponse
     {
@@ -378,10 +414,10 @@ public class OpenAIController : MonoBehaviour
     private class Choice
     {
         public Message message;
-    }
+    }*/
 
     [System.Serializable]
-    private class Message
+    public class Message
     {
         public string role;
         public string content;
