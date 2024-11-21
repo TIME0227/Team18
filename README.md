@@ -1,5 +1,5 @@
 # <img src="https://file.notion.so/f/f/814ce92c-f43f-4be5-b3c1-f67cf319bf48/c76f84d9-fd43-4733-8e7e-ddf5bfb4a88a/%EC%9A%B0%EC%A3%BC%ED%83%80%EC%9D%B4%EA%B1%B0_%EB%A1%9C%EA%B3%A0_black.png?id=5ae38cae-840c-4acd-bcf8-094ae7c5ea58&table=block&spaceId=814ce92c-f43f-4be5-b3c1-f67cf319bf48&expirationTimestamp=1718618400000&signature=BInsqRGl4ELkK69N2tcmCHO4nO0W11u9UhhPwXG2M6k&downloadName=%EC%9A%B0%EC%A3%BC%ED%83%80%EC%9D%B4%EA%B1%B0_%EB%A1%9C%EA%B3%A0_black.png" width="35"> 캡스톤디자인과창업프로젝트 18팀 우주타이거
-### 고민을 이야기할 곳이 없는 사람들을 위한 게임형 힐링 AI 챗봇 상담 서비스
+### 주관적인 심리적 불편감을 겪는 20-30대를 위한 LLM기반 개인 맞춤형 챗봇 상담 서비스
 
 ### 👩‍👧‍👧 팀원
 이다인(팀장), 강예진, 팽지원
@@ -7,34 +7,35 @@
 24.03.04 ~ 24.12.
 
 ### 📌 프로젝트 소개
-+ ❔타겟 고객: 고민이 있어도 표현하지 못하고, 해결책을 찾을 수 있는 곳이 없어서 고립된 느낌을 받는 사람들
-+ ❗해결 방안: 다양한 대화 스타일의 인공지능 상담사가 사용자의 고민에 답변을 해주고, 지속적인 상담을 유도하기 위한 게이미피케이션 요소를 추가한 상담 앱 서비스
-  + 사용자의 목표에 맞는 질문을 던져 주는 상담사 선택
-  + 사용자가 원하는 자신만의 상담사를 커스터마이징
-  + 친근하고 귀여운 가상의 동물 캐릭터로 심리적 장벽 완화
-  + 게이미피케이션 요소로 지속적인 상담 유도
++ ❔ 타겟 고객: 주관적인 심리적 불편감을 겪는 20-30대
++ ❗ 해결 방안: 
+  + **맥락에 맞춘 그래픽 기반 반응**<br>: NPC의 표정과 모션을 통해 정서적 연결감을 제공하여, 텍스트만으로는 느끼기 어려운 친밀감과 몰입감을 제공.
+  + **맞춤형 피드백 리포트**<br>: 사용자의 대화 기록을 분석해, 개인 맞춤형 리포트를 능동적으로 제공.
+  + **상담 목적으로 설계된 다양한 캐릭터**<br>: 다양한 성격과 상담 이론에 맞춘 캐릭터들이 제공되어, 사용자가 자신의 필요에 맞는 상담사 선택 가능.
+  + **이전 대화를 기억하는 지속성**<br>: 이전 대화를 기억해 연속적인 상담을 가능하게 하여, 사용자에게 더 일관성 있는 상담 경험을 제공.
 
 ### 😊 상담사 리스트
-1. 인지 치료 상담사
+1. **인지 치료 상담사**
   + 불안과 우울에 효과적이라고 알려져 있어요
   + 우리가 불안하고 우울한 이유는 부정적이고 극단적인 사고 때문일 확률이 커요. 부정적 사고 대신  유연한 사고를 같이 찾아나가는 과정입니다.
 
-2. WDEP 상담사
-  + 내가 진짜 원하는 이상적 세계는 무엇인지 찾아 보고 이상적 세계에 가까워지기 위한 계획을 같이 세워나가는 과정입니다. 
 
-3. 상냥한 친구
+2. **장점찾기 상담사**
+  + 함께 대화를 나누며 숨겨진 장점을 발견하고, 자신을 더 긍정적으로 바라볼 수 있도록 도와줍니다.
+
+
+3. **상냥한 친구**
   + 당신만을 생각하고 위하는 순수하고 상냥한 친구입니다.
   + 일상적인 얘기와 고민을 나눠보세요.
 
-4. 현실적이고 시니컬한 상담사
+
+4. **현실적이고 시니컬한 상담사**
   + MBTI가 T 유형인 분들에게 추천드려요
   + 현실적이고 맞는 말만 하는 조언을 듣고 싶다면 대화해보세요.
 
 ### ✏️ 사용 기술
 <a href="https://unity.com/kr" target="_blank"><img src="https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white"/></a><br>
 <a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> gpt-4o (LLM)<br>
-<a href="https://clova.ai/speech" target="_blank"><img src="https://img.shields.io/badge/Clova-03c75a?style=for-the-badge&logoColor=white"/></a> Naver Clova Speech (STT)<br>
-<a href="https://clova.ai/voice/" target="_blank"><img src="https://img.shields.io/badge/Clova-03c75a?style=for-the-badge&logoColor=white"/></a> Naver Clova Voice (TTS)<br>
 <a href="https://sqlite.org/" target="_blank"><img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/></a>
 
 ### 📝 기술검증
