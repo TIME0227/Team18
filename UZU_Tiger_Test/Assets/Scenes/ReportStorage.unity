@@ -2600,10 +2600,10 @@ MonoBehaviour:
   Report_Date: {fileID: 181512376}
   Report_NPCName: {fileID: 1811705066}
   npcPortraits:
-  - {fileID: 21300000, guid: 9a0e3c31a28ca4596bfb8a3d3c3d5d10, type: 3}
-  - {fileID: 21300000, guid: 26eefea33ae064eb884d19ca77064f9f, type: 3}
-  - {fileID: 21300000, guid: 2365c5f30bbf74a75ad71427c253ebfc, type: 3}
-  - {fileID: 21300000, guid: 8a77e88378a8f4dfe8b1a011e05195d6, type: 3}
+  - {fileID: 21300000, guid: 4670f581c01b4b742b72f11a3342c024, type: 3}
+  - {fileID: 21300000, guid: 5048069d71d973f48bb71d9a9f715590, type: 3}
+  - {fileID: 21300000, guid: 817eba5795269a448b8a554c2f3ae10e, type: 3}
+  - {fileID: 21300000, guid: 7cae5999541ad34489dc9a3b63795ae3, type: 3}
   showReportBtn: {fileID: 61945774}
 --- !u!1 &1811705064
 GameObject:
@@ -3586,7 +3586,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 20
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
