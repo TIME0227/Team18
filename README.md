@@ -39,10 +39,12 @@
 <a href="https://openai.com/index/hello-gpt-4o/" target="_blank"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"/></a> (gpt-4o (LLM))
 
 
-**Server** <br>[리포지토리 바로가기](https://github.com/yjk395/Team18-Server) <br>
+**Server** <br>[Team19-Server](https://github.com/yjk395/Team18-Server) 리포지토리에서 서버 설정과 OpenAI API 통합을 다루고 있다. <br>
 <img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/OpenAI%20API-eee?style=for-the-badge&logo=openai&logoColor=412991"/></a>
+
+**Open source** <br> 본 프로젝트에서는 Unity에서의 SQLite 통합을 위하여 [SQLite4Unity3d](https://github.com/robertohuertasm/SQLite4Unity3d.git)를 사용하였다.
 
 ### 📝 기술검증
 1. Unity에 chatGPT API 연결
