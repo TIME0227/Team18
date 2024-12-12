@@ -1,5 +1,5 @@
 # <img src="Reports/우주타이거_로고.png" width="50px"> 캡스톤디자인과창업프로젝트 18팀 우주타이거
-### 주관적인 심리적 불편감을 겪는 20-30대를 위한 LLM기반 개인 맞춤형 챗봇 상담 서비스
+### 주관적인 심리적 불편감을 겪는 20대를 위한 LLM기반 개인 맞춤형 챗봇 상담 서비스
 
 ### 👩‍👧‍👧 팀원
 이다인(팀장), 강예진, 팽지원
@@ -103,3 +103,6 @@ UZU_Tiger_Test/Assets/Scripts/
 ### How to Test
 📃 제품 설명서 : [Google Drive_제품 설명서](https://drive.google.com/file/d/1SpQ4tKePEHvgrin_NIZr9n9MsoC7u-_y/view?usp=drive_link)
 <br>📜 README : [Google Drive_README.install](https://drive.google.com/file/d/1C7kzyIQdI1FovcK1SFlHSwRO61yMJpPw/view?usp=drive_link)
+
+### 최종 보고서
+📔 최종 보고서 : [최종 보고서 바로가기](https://github.com/TIME0227/Team18/blob/main/Reports/2%EC%B0%A8%EB%B3%B4%EA%B3%A0%EC%84%9C/18-%EC%9A%B0%EC%A3%BC%ED%83%80%EC%9D%B4%EA%B1%B0-%EC%B5%9C%EC%A2%85%EB%B3%B4%EA%B3%A0%EC%84%9C-2024-12-12-v0.md)
