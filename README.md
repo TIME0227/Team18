@@ -54,3 +54,35 @@
 
 ### 🎞 최종 시연 영상
 <a href="https://youtu.be/PnBsc46tR58" target="_blank"><img alt="최종 시연 영상" src ="https://img.shields.io/badge/Youtube-ff0000.svg?&style=for-the-badge&logo=Youtube&logoColor=white"/></a>
+
+## Source Codes 설명
+```
+UZU_Tiger_Test/Assets/Scripts/
+├── Intro/
+│   ├── Intro.cs
+│   ├── CameraPositionSaver.cs
+│   ├── CameraMovement.cs
+├── Settings_Tutorial/
+│   ├── Tutorial_Text.cs
+│   ├── UserDataManager.cs      # 닉네임, 성별, 나이, 직업과 같은 사용자 개인정보를 저장하고 조회
+│   ├── CameraPositionLoader.cs
+├── Main/
+│   ├── MainController.cs
+├── KakaoTalk/
+│   ├── ChatManager.cs          # 사용자의 입력 텍스트를 OpenAIController.cs에 전달하고, 그에 대한 AI의 답변 텍스트를 메신저 채팅 형식으로 화면에 출력
+│   ├── AreaScript.cs
+│   ├── NPCEmotionManager.cs    # 감정 표현 키워드에 따라 NPC 캐릭터의 Animator와 얼굴 텍스처 Renderer를 제어
+│   ├── Editor/
+│   │   ├── ChatEditor.cs
+├── ReportStorage/
+│   ├── DialogueManager.cs      # ReportStorage 씬에서 DB에 저장된 대화 요약본 출력을 담당
+│   ├── DialogueScript.cs
+│   ├── ReportManager.cs        # ReportStorage 씬에서 리포트 생성 요청 및 출력을 담당
+│   ├── ReportScript.cs
+├── Database/
+│   ├── DataService.cs          # 데이터베이스 작업 수행 함수 모음
+│   ├── SQLite.cs               # SQLite 데이터베이스에 접근할 수 있는 기능
+│   ├── SessionLog.cs           # SessionLog 테이블의 데이터 클래스
+│   ├── ReportLog.cs            # ReportLog 테이블의 데이터 클래스
+└── OpenAIController.cs         # 프롬프트 엔지니어링을 통해 서버에 요청을 보내고 답변을 받아 처리
+```
