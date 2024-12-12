@@ -7,7 +7,7 @@
 24.03.04 ~ 24.12.
 
 ### 📌 프로젝트 소개
-+ ❔ 타겟 고객: 주관적인 심리적 불편감을 겪는 20-30대
++ ❔ 타겟 고객: 주관적인 심리적 불편감을 겪는 20대
 + ❗ 해결 방안: 
   + **맥락에 맞춘 그래픽 기반 반응**<br>: NPC의 표정과 모션을 통해 정서적 연결감을 제공하여, 텍스트만으로는 느끼기 어려운 친밀감과 몰입감을 제공.
   + **맞춤형 피드백 리포트**<br>: 사용자의 대화 기록을 분석해, 개인 맞춤형 리포트를 능동적으로 제공.
@@ -101,4 +101,5 @@ UZU_Tiger_Test/Assets/Scripts/
 <br>🎁 zip : [Google Drive_zip](https://drive.google.com/file/d/1uzCq4OwAn8ItykI0dQt6U7ZL21oR2TPB/view?usp=drive_link)
 
 ### How to Test
-제품 설명서 : 
+📃 제품 설명서 : [Google Drive_제품 설명서](https://drive.google.com/file/d/1SpQ4tKePEHvgrin_NIZr9n9MsoC7u-_y/view?usp=drive_link)
+<br>📜 README : [Google Drive_README.install](https://drive.google.com/file/d/1C7kzyIQdI1FovcK1SFlHSwRO61yMJpPw/view?usp=drive_link)
