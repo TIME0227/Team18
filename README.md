@@ -55,7 +55,8 @@
 ### 🎞 최종 시연 영상
 <a href="https://youtu.be/PnBsc46tR58" target="_blank"><img alt="최종 시연 영상" src ="https://img.shields.io/badge/Youtube-ff0000.svg?&style=for-the-badge&logo=Youtube&logoColor=white"/></a>
 
-## Source Codes 설명
+## 기본 설명
+### Source Codes
 ```
 UZU_Tiger_Test/Assets/Scripts/
 ├── Intro/
@@ -86,3 +87,9 @@ UZU_Tiger_Test/Assets/Scripts/
 │   ├── ReportLog.cs            # ReportLog 테이블의 데이터 클래스
 └── OpenAIController.cs         # 프롬프트 엔지니어링을 통해 서버에 요청을 보내고 답변을 받아 처리
 ```
+
+### How to Build
+유니티 프로젝트 폴더인 `UZU_Tiger_Test`를 유니티 에디터로 실행 후 Android 플랫폼 빌드를 진행한다.
+
+### How to Install
+Download .apk file
