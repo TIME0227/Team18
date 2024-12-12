@@ -63,26 +63,26 @@
 ```
 UZU_Tiger_Test/Assets/Scripts/
 ├── Intro/
-│   ├── Intro.cs
-│   ├── CameraPositionSaver.cs
-│   ├── CameraMovement.cs
+│   ├── Intro.cs                # 인트로 화면 연출
+│   ├── CameraPositionSaver.cs  # 사용자가 화면을 터치한 시점의 카메라 Transform 값 저장
+│   ├── CameraMovement.cs       # 카메라가 대각선으로 움직이도록 함 
 ├── Settings_Tutorial/
-│   ├── Tutorial_Text.cs
+│   ├── Tutorial_Text.cs        # 화살표 버튼 터치 시 튜토리얼 텍스트 변경
 │   ├── UserDataManager.cs      # 닉네임, 성별, 나이, 직업과 같은 사용자 개인정보를 저장하고 조회
-│   ├── CameraPositionLoader.cs
+│   ├── CameraPositionLoader.cs # 저장된 카메라 Transform 값 불러와 적용
 ├── Main/
-│   ├── MainController.cs
+│   ├── MainController.cs       # NPC 클릭 여부 판단 및 NPC 소개 팝업, 기록보관소 UI 연결
 ├── KakaoTalk/
 │   ├── ChatManager.cs          # 사용자의 입력 텍스트를 OpenAIController.cs에 전달하고, 그에 대한 AI의 답변 텍스트를 메신저 채팅 형식으로 화면에 출력
-│   ├── AreaScript.cs
+│   ├── AreaScript.cs           # 사용자와 AI의 채팅 말풍선 Prefab 설정
 │   ├── NPCEmotionManager.cs    # 감정 표현 키워드에 따라 NPC 캐릭터의 Animator와 얼굴 텍스처 Renderer를 제어
 │   ├── Editor/
-│   │   ├── ChatEditor.cs
+│   │   ├── ChatEditor.cs       # 텍스트 전송 버튼 처리
 ├── ReportStorage/
 │   ├── DialogueManager.cs      # ReportStorage 씬에서 DB에 저장된 대화 요약본 출력을 담당
-│   ├── DialogueScript.cs
+│   ├── DialogueScript.cs       # 대화 요약본 Prefab 설정
 │   ├── ReportManager.cs        # ReportStorage 씬에서 리포트 생성 요청 및 출력을 담당
-│   ├── ReportScript.cs
+│   ├── ReportScript.cs         # 리포트 Prefab 설정
 ├── Database/
 │   ├── DataService.cs          # 데이터베이스 작업 수행 함수 모음
 │   ├── SQLite.cs               # SQLite 데이터베이스에 접근할 수 있는 기능
@@ -93,6 +93,12 @@ UZU_Tiger_Test/Assets/Scripts/
 
 ### How to Build
 유니티 프로젝트 폴더인 `UZU_Tiger_Test`를 유니티 에디터로 실행 후 Android 플랫폼 빌드를 진행한다.
+<br>유니티 에디터 버전 : 2022.3.24f1
 
 ### How to Install
-Download .apk file
+구글 드라이브에서 apk 파일을 다운로드 후 Android 기기에서 설치한다.
+<br>🎈 apk : [Google Drive_apk](https://drive.google.com/file/d/1cEW4bvIO6YAA_T5vGFQ1LKYUu2bM2drO/view?usp=drive_link)
+<br>🎁 zip : [Google Drive_zip](https://drive.google.com/file/d/1uzCq4OwAn8ItykI0dQt6U7ZL21oR2TPB/view?usp=drive_link)
+
+### How to Test
+제품 설명서 : 
