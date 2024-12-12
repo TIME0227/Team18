@@ -47,6 +47,7 @@
 **Open source** <br> 본 프로젝트에서는 Unity에서의 SQLite 통합을 위하여 [SQLite4Unity3d](https://github.com/robertohuertasm/SQLite4Unity3d.git)를 사용하였다.
 
 ### 📝 기술검증
+기술검증은 2024.06.18.에 완료되었다.
 1. Unity에 chatGPT API 연결
 2. 4가지 스타일의 상담사 프롬프트 작성 & 테스트
    + 체험 : https://team18-nnpkyfvownh9obzlnmdztd.streamlit.app/
